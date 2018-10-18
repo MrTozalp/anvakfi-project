@@ -2,7 +2,7 @@
   <img
     class="AVLogo"
     alt="Anadolu Vakfı Logo"
-    src="~/assets/images/AV-logo.png">
+    src="@/assets/images/AV-logo.png">
 </template>
 
 <style>

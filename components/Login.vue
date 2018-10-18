@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import Instutition from '~/components/Instutition.vue'
+import Instutition from '@/components/Instutition.vue'
 
 export default {
   components: {
