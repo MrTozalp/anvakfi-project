@@ -1,0 +1,24 @@
+{
+  "name": "avakfi-project",
+  "version": "1.0.0",
+  "description": "Anadolu vakfı üyeleri için yapılacak program",
+  "author": "Murat Özalp",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "cross-env": "^5.2.0",
+    "nuxt": "^2.0.0",
+    "vuetify": "^1.2.4"
+  },
+  "devDependencies": {
+    "material-design-icons-iconfont": "^3.0.3",
+    "nodemon": "^1.11.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2"
+  }
+}
