@@ -2,7 +2,7 @@
   <img
     class="AVLogo"
     alt="Anadolu Vakfı Logo"
-    src="@/assets/images/AV-logo.png">
+    src="http://www.anadoluvakfi.org/sites/all/files/logo-orta-2.png">
 </template>
 
 <style>

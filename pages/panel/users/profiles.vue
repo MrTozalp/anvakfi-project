@@ -21,7 +21,7 @@ export default {
             members: [
                 {
                     fullname: 'Murat Özalp',
-                    profile: "/static/members/profiles/profile2.JPG",
+                    profile: "https://cdn.pixabay.com/photo/2017/02/23/13/05/profile-2092113_960_720.png",
                     work_email: 'ozlp.mrt@innova.com.tr',
                     personal_email: 'ozlp.mrt@gmail.com',
                     work_phone: '5545855544',
@@ -31,7 +31,7 @@ export default {
                 },
                 {
                     fullname: 'Melih Özalp',
-                    profile: "/static/members/profiles/profile1.jpg",
+                    profile: "https://cdn.pixabay.com/photo/2017/02/23/13/05/profile-2092113_960_720.png",
                     work_email: 'ozlp.mrt@innova.com.tr',
                     personal_email: 'ozlp.mrt@gmail.com',
                     work_phone: '5545855544',
@@ -41,7 +41,7 @@ export default {
                 },
                 {
                     fullname: 'Test Test',
-                    profile: '/static/members/profiles/profile1.jpg',
+                    profile: 'https://cdn.pixabay.com/photo/2017/02/23/13/05/profile-2092113_960_720.png',
                     work_email: 'test.test@innova.com.tr',
                     personal_email: 'test@gmail.com',
                     work_phone: '5545855544',

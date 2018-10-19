@@ -15,16 +15,12 @@
 </template>
 
 <script>
-import Announcement from '@/components/widgets/slide/Announcement';
-import MiniStatistic from '@/components/widgets/statistic/MiniStatistic';
 import CircleStatistic from '@/components/widgets/statistic/CircleStatistic';
 
 export default {
     layout: 'inside',
     components: {
-      Announcement,
-      CircleStatistic,
-      MiniStatistic
+      CircleStatistic
   },
     data () {
       return {
