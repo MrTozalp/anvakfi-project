@@ -1,5 +1,5 @@
 <template>
-  <v-layout>
+  <div>
     <v-navigation-drawer
       v-model="drawer"
       clipped
@@ -59,7 +59,7 @@
           to="/">ÇIKIŞ YAP</v-btn>
     </v-toolbar-items>
     </v-toolbar>
-  </v-layout>    
+  </div>
 </template>
 
 <script>

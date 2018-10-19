@@ -10,7 +10,6 @@
           </router-view>
 
 
-        
       </v-container>
     </v-content>
     <Footer/>
