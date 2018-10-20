@@ -1,13 +1,12 @@
 <template>
   
 <v-card>
-    <v-card-text>
-      
+    <v-card-text>      
        <logo/>
        <v-subheader class="pa-0">Giriş için vakıf seçiniz</v-subheader>
       <v-autocomplete
         v-model="model"
-        :items="states"
+        :items="instutions"
         prepend-icon="mdi-city"
       >
       </v-autocomplete>
@@ -23,9 +22,8 @@ import Logo from '@/components/Logo.vue'
       return {
         isEditing: false,
         model: null,
-        states: [
-          'Anadolu Eğitim ve Kültür Vakfı', 'Ankara Lösemili Çocuklar Vakfı (LÖSEV)', 'Türk Eğitim Vakfı (TEV)',
-          'İstanbul Kültür Sanat Vakfı (İKSV)', 'Türkiye Eğitim Gönüllüleri Vakfı (TEGV)'
+        instutions: [
+          'Anadolu Eğitim ve Kültür Vakfı'
         ]
       }
     },

@@ -2,7 +2,7 @@
   <img
     class="AVLogo"
     alt="Anadolu Vakfı Logo"
-    src="http://www.anadoluvakfi.org/sites/all/files/logo-orta-2.png">
+    src="http://vitalisweb.net/anadoluvakfi/img/ico/Logo.png">
 </template>
 
 <style>
