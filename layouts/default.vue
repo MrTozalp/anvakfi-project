@@ -2,7 +2,7 @@
 <v-app>
     <Header/>
     <v-content>
-      <v-container fluid>
+      <v-container fluid >
         <router-view>
           <nuxt />
         </router-view>

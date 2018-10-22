@@ -1,34 +1,40 @@
-<template>
-  
-<v-card>
-    <v-card-text>      
-       <logo/>
-       <v-subheader class="pa-0">Giriş için vakıf seçiniz</v-subheader>
-      <v-autocomplete
-        v-model="model"
-        :items="instutions"
-        prepend-icon="mdi-city"
-      >
-      </v-autocomplete>
-    </v-card-text>
-   
-  </v-card>
+<template> 
+       <v-card flat height="185px">
+    
+         <v-container fill-height fluid>
+          <v-card-title  primary-title>
+            Giriş için vakıf seçiniz
+          </v-card-title>
+        
+          <v-autocomplete
+            v-model="selectedInstutition"
+            :items="instutions"
+            prepend-icon="fa-city"
+          >
+          </v-autocomplete>
+        </v-container>
+       </v-card>
+       
+
 </template>
 
 <script>
-import Logo from '@/components/Logo.vue'
   export default {
     data () {
       return {
         isEditing: false,
-        model: null,
+        selectedInstutition : null,
         instutions: [
           'Anadolu Eğitim ve Kültür Vakfı'
         ]
       }
     },
-    components: {
-        Logo
+    watch: {
+      selectedInstutition: function (val) {
+        console.log(val);
+        if(val === 'Anadolu Eğitim ve Kültür Vakfı')
+          this.$emit('instutionAdded', 'http://vitalisweb.net/anadoluvakfi/img/ico/Logo.png');
+      }
     }
   }
 </script>
