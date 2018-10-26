@@ -114,7 +114,7 @@ export default {
             if (this.$refs.form.validate()) {
                 
                 // Edit the member
-                if(this.member) Object.assign(this.editedMember, this.member)
+                if(this.editedMember) Object.assign(this.editedMember, this.member)
                 else Members.push(this.member)
                 // Save the member
                 this.$router.push("/membership")
