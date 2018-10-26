@@ -11,7 +11,7 @@
     >
     <template slot="no-data">
       <v-alert :value="true" color="error" icon="warning">
-        Sorry, nothing to display here :(
+        Üzgünüm, listede kayıt bulunmamaktadır :(
       </v-alert>
     </template>
 
@@ -36,10 +36,20 @@
                 >
                 <v-icon nuxt >edit</v-icon>
             </v-btn>
-            <v-btn depressed outline icon fab dark small
-                color="red">
-                <v-icon>delete</v-icon>
-            </v-btn>
+
+            <dialog-button 
+                headline="Kayıt Silme" 
+                content="Kaydı silmek istiyor musunuz?"
+                actionBtnTitle="SİL"
+                defaultBtnTitle="İPTAL"
+                @click="deleteRecord(props.item)"
+                >
+                <v-btn slot="actionActivator"                    
+                    depressed outline icon fab dark small color="red"
+                    >
+                    <v-icon>delete</v-icon>
+                </v-btn>
+            </dialog-button>
         </td> 
      </template>
 
@@ -48,7 +58,12 @@
 </template>
 
 <script>
+import DialogButton from '@/components/inside/Dialog'
+import { Items as Members } from '@/static/user'
 export default {
+    components: {
+        DialogButton
+    },
     props: {
         tableConfig: {
             type: Object,
@@ -59,6 +74,9 @@ export default {
         editItem (uuid) {
             this.$router.push('/membership/'+uuid);
         },
+        deleteRecord(item){
+            Members.splice(item)
+        }
     }
 }
 </script>
