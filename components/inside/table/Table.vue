@@ -9,8 +9,13 @@
         select-all
         v-model="tableConfig.selected"
     >
+    <template slot="no-data">
+      <v-alert :value="true" color="error" icon="warning">
+        Sorry, nothing to display here :(
+      </v-alert>
+    </template>
 
-     <template slot="items" slot-scope="props">
+    <template slot="items" slot-scope="props">
         <td>
             <v-checkbox
                 primary
@@ -25,10 +30,14 @@
         <td>{{ props.item.jobTitle }}</td>
         
         <td>
-            <v-btn depressed outline icon fab dark color="primary" small>
-                <v-icon>edit</v-icon>
+            <v-btn depressed outline icon fab dark 
+                color="primary" small
+                @click="editItem(props.item.uuid)"
+                >
+                <v-icon nuxt >edit</v-icon>
             </v-btn>
-            <v-btn depressed outline icon fab dark color="red" small>
+            <v-btn depressed outline icon fab dark small
+                color="red">
                 <v-icon>delete</v-icon>
             </v-btn>
         </td> 
@@ -45,6 +54,11 @@ export default {
             type: Object,
             required: true
         }
+    },
+    methods: {
+        editItem (uuid) {
+            this.$router.push('/membership/'+uuid);
+        },
     }
 }
 </script>

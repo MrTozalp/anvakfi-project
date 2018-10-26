@@ -12,6 +12,7 @@
 
 <script>
 import { Items as Users } from '@/static/user'
+
 import TblToolbar from '@/components/inside/table/Toolbar'
 import Table from '@/components/inside/table/Table'
   export default {

@@ -80,10 +80,18 @@ export default {
         FormInput,
         FormButton
     },
+    props:{
+        editedMember: {
+            type: Object,
+            required: false
+        }
+    },
     data () {
         return {
             valid: true,
-            member:  {
+            member:  this.editedMember
+            ? { ...this.editedMember }
+            : {
                 fullname: "",
                 email: "",
                 identityNumber: "",
@@ -104,9 +112,11 @@ export default {
         submit() {
 
             if (this.$refs.form.validate()) {
+                
+                // Edit the member
+                if(this.member) Object.assign(this.editedMember, this.member)
+                else Members.push(this.member)
                 // Save the member
-                console.log(this.member)
-                Members.push(this.member)
                 this.$router.push("/membership")
             }
 

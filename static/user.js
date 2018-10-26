@@ -7,9 +7,7 @@ var Items =  [
     'username': 'Dessie79',
     'jobTitle': 'Yazılım Uzmanı',
     'phone': '+905517992809',
-    'address': {
-
-      }
+    'address': ''
   }
 
 ];
