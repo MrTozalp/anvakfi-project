@@ -2,7 +2,7 @@
   <v-layout row wrap class="pa-1">
         <v-flex lg12>
           <v-card >
-            <TblToolbar />
+            
             <v-divider></v-divider>
             <Table :tableConfig="tableConfig"/>
           </v-card>
@@ -13,12 +13,12 @@
 <script>
 import { Items as Users } from '@/static/user'
 
-import TblToolbar from '@/components/inside/table/Toolbar'
+
 import Table from '@/components/inside/table/Table'
   export default {
     layout: 'inside',
     components: {
-        TblToolbar,
+        
         Table
     },
     data () {
@@ -29,7 +29,7 @@ import Table from '@/components/inside/table/Table'
           headers: [
             {
               text: 'Kimlik No',
-              value: 'name'
+              value: 'identityNumber'
             },
             {
               text: 'Ad Soyad',

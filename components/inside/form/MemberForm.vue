@@ -123,10 +123,10 @@ export default {
         },
         onCancel() {
         // Navigate back
-            this.$router.push("/membership");
+            this.$router.push("/membership")
         }
     }
-};
+}
 </script>
             
 
