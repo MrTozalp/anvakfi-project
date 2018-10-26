@@ -1,6 +1,6 @@
 # avakfi-project
 
-> Anadolu vakfı üyeleri için yapılacak program
+> Bir nuxt/vuejs projesi
 
 ## Build Setup
 
