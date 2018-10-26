@@ -11,6 +11,7 @@ const Menu =  [
     { name: 'panel-users-profiles', icon: 'accessibility', text: 'Kullanıcılar', to:'/panel/users/profiles' },
     { name: 'panel-users3', icon: 'label', text: 'Genel Bilgiler' , to:'/panel/users'},
     { divider: true },
+    { icon: 'exit_to_app', text: 'Çıkış' , to:'/'}
 ]
  
   export default Menu;

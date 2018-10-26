@@ -53,11 +53,7 @@
       <v-toolbar-side-icon @click.native="drawer = !drawer"></v-toolbar-side-icon>
       <span class="title ml-3 mr-5">Bzm&nbsp;<span class="font-weight-light">Vakıf</span></span>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat
-          nuxt
-          to="/">ÇIKIŞ YAP</v-btn>
-    </v-toolbar-items>
+
     </v-toolbar>
   </div>
 </template>
