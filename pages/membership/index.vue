@@ -1,8 +1,7 @@
 <template>
   <v-layout row wrap class="pa-1">
         <v-flex lg12>
-          <v-card >
-            
+          <v-card > 
             <v-divider></v-divider>
             <Table :tableConfig="tableConfig"/>
           </v-card>
@@ -45,7 +44,7 @@ import Table from '@/components/inside/table/Table'
             },
                         {
               text: 'Meslek',
-              value: 'phone'
+              value: 'jobTitle'
             },
             {
               text: 'İşlem',

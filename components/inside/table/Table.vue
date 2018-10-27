@@ -5,10 +5,14 @@
                 flat solo hide-details
                 v-model="search"
                 slot="searchField"
-                prepend-icon="search"
+                prepend-inner-icon="search"
                 placeholder="Filtrele"
                 class="hidden-sm-and-down"
             ></v-text-field>
+            <v-btn slot="exportAction" icon @click="exportToExcel">
+                <v-icon>get_app</v-icon>
+            </v-btn> 
+
         </TblToolbar>
         <v-data-table
             :headers="tableConfig.headers"
@@ -70,13 +74,30 @@
 </template>
 
 <script>
+import XLSX from 'xlsx'
 import DialogButton from '@/components/inside/Dialog'
 import TblToolbar from '@/components/inside/table/Toolbar'
 import { Items as Members } from '@/static/user'
 export default {
     data() {
         return {
-            search: ''
+            search: '',
+            excelHeader : [
+                {
+                    col1: 'Kimlik No',
+                    col2: 'Ad Soyad',
+                    col3: 'Email',
+                    col4: 'Telefon',
+                    col5: 'Meslek',
+                }
+            ],
+            excelConfig : {
+                skipHeader: true,
+                origin: "A2",
+                header: [ "identityNumber", "fullname", "email", "phone","jobTitle" ],
+            }
+                
+            
         }
     },
     components: {
@@ -95,6 +116,19 @@ export default {
         },
         deleteRecord(item){
             Members.splice(item)
+        },
+        exportToExcel(){
+            var memberToExport = Members
+            memberToExport.forEach(function(v){ 
+                delete v.uuid;
+                delete v.username;
+            });
+            var ws = XLSX.utils.json_to_sheet(this.excelHeader, 
+                 {skipHeader: true})
+            XLSX.utils.sheet_add_json(ws, memberToExport, this.excelConfig)
+            var wb = XLSX.utils.book_new()
+            XLSX.utils.book_append_sheet(wb, ws, 'search') 
+            XLSX.writeFile(wb, 'üye listesi.xlsx')
         }
     }
 }
