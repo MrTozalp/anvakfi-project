@@ -1,14 +1,75 @@
 var Items =  [
   {
-    'uuid': '65a6eb21-67b5-45c3-9af7-faca2d9b60d4',
+    'uuid': '1',
     'fullname': 'Murat Özalp',
     'identityNumber': '19863462331',
     'email': 'ozlp.mrt@gmail.com',
     'username': 'Dessie79',
     'jobTitle': 'Yazılım Uzmanı',
     'phone': '+905517992809',
-    'address': ''
+    'address': 'Yukarıyurtçu Mahallesi Odtü TOki Evleri Blok:10-N Daire:18 Etimesgut'
+  },
+  {
+    'uuid': '2',
+    'fullname': 'Murat Özalp',
+    'identityNumber': '19863462331',
+    'email': 'ozlp.mrt@gmail.com',
+    'username': 'Dessie79',
+    'jobTitle': 'Yazılım Uzmanı',
+    'phone': '+905517992809',
+    'address': 'Deneme deneme deneme Deneme DenemeDeneme'
+  },
+  {
+    'uuid': '3',
+    'fullname': 'Murat Özalp',
+    'identityNumber': '19863462331',
+    'email': 'ozlp.mrt@gmail.com',
+    'username': 'Dessie79',
+    'jobTitle': 'Yazılım Uzmanı',
+    'phone': '+905517992809',
+    'address': 'Plevne Mahallesi Zafer Sok. No:21/3 Balıkesirt'
+  },
+  {
+    'uuid': '4',
+    'fullname': 'Murat Özalp',
+    'identityNumber': '19863462331',
+    'email': 'ozlp.mrt@gmail.com',
+    'username': 'Dessie79',
+    'jobTitle': 'Yazılım Uzmanı',
+    'phone': '+905517992809',
+    'address': 'Yukarıyurtçu Mahallesi Odtü TOki Evleri Blok:10-N Daire:18 Etimesgut'
+  },
+  {
+    'uuid': '5',
+    'fullname': 'Murat Özalp',
+    'identityNumber': '19863462331',
+    'email': 'ozlp.mrt@gmail.com',
+    'username': 'Dessie79',
+    'jobTitle': 'Yazılım Uzmanı',
+    'phone': '+905517992809',
+    'address': 'Yukarıyurtçu Mahallesi Odtü TOki Evleri Blok:10-N Daire:18 Etimesgut'
+  },
+  {
+    'uuid': '6',
+    'fullname': 'Murat Özalp',
+    'identityNumber': '19863462331',
+    'email': 'ozlp.mrt@gmail.com',
+    'username': 'Dessie79',
+    'jobTitle': 'Yazılım Uzmanı',
+    'phone': '+905517992809',
+    'address': 'Plevne Mahallesi Zafer Sok. No:21/3 Balıkesir'
+  },
+  {
+    'uuid': '7',
+    'fullname': 'Murat Özalp',
+    'identityNumber': '19863462331',
+    'email': 'ozlp.mrt@gmail.com',
+    'username': 'Dessie79',
+    'jobTitle': 'Yazılım Uzmanı',
+    'phone': '+905517992809',
+    'address': 'Plevne Mahallesi Zafer Sok. No:21/3 Balıkesir'
   }
+
 
 ];
 

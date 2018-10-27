@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TblToolbar >
+        <TblToolbar :moreItems="moreItems" >
             <v-text-field
                 flat solo hide-details
                 v-model="search"
@@ -13,6 +13,14 @@
                 <v-icon>get_app</v-icon>
             </v-btn> 
 
+            <v-list slot="moreAction">
+                <v-list-tile >
+                    <v-icon>get_app</v-icon>
+                    <v-list-tile-title @click="exportToWord">Adres Etiketi Al</v-list-tile-title>
+                </v-list-tile>
+            </v-list>
+
+
         </TblToolbar>
         <v-data-table
             :headers="tableConfig.headers"
@@ -21,7 +29,8 @@
             :rows-per-page-items="tableConfig.rows_per_page_items"
             class="elevation-1"
             select-all
-            v-model="tableConfig.selected"
+            v-model="selected"
+            item-key="uuid"
         >
             <template slot="no-data">
                 <v-alert :value="true" color="error" icon="warning">
@@ -81,7 +90,14 @@ import { Items as Members } from '@/static/user'
 export default {
     data() {
         return {
+            selected: [],
             search: '',
+            moreItems: [
+                {
+                    title: 'Adres Etiketi Al', 
+                    icon : 'get_app'
+                }
+            ],
             excelHeader : [
                 {
                     col1: 'Kimlik No',
@@ -129,6 +145,41 @@ export default {
             var wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, ws, 'search') 
             XLSX.writeFile(wb, 'üye listesi.xlsx')
+        },
+        exportToWord(){
+            var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head>"+
+            "<body >";
+            var context     = "<table  ><tr>"
+            var colNum = 0;
+            this.selected.forEach(item => {
+                
+                if(item.address){
+                    if(colNum === 3){
+                        context      = context + "</tr><tr>"
+                        colNum = 0;
+
+                    }
+                        console.log(colNum)
+                        console.log(context)
+                    context = context + "<td>"+item.address+"</td>"
+                    colNum = colNum + 1;
+                }
+            });                    
+            context      = context + "</tr></table>"
+
+            var footer = "</body></html>";
+            var sourceHTML = header+context+footer;
+            
+            var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+            var fileDownload = document.createElement("a");
+            document.body.appendChild(fileDownload);
+            fileDownload.href = source;
+            fileDownload.download = 'document.doc';
+            fileDownload.click();
+            document.body.removeChild(fileDownload);
         }
     }
 }

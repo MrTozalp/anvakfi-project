@@ -3,8 +3,8 @@ const Menu =  [
     { divider: true },
     { heading: 'Üyelik Yönetimi' },
     { name: 'membership', icon: 'face', text: 'Üyeler', to:'/membership'  },
-    { name: 'members1', icon: 'group_work', text: 'Gruplar', to:'/membership' },
-    { name: 'members2', icon: 'account_balance', text: 'Şubeler', to:'/membership' },
+    { name: 'groups', icon: 'group_work', text: 'Gruplar', to:'/groups' },
+    { name: 'branches', icon: 'account_balance', text: 'Şubeler', to:'/branches' },
 
     { divider: true },
     { heading: 'Admin' },

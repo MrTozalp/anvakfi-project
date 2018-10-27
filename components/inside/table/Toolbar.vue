@@ -15,7 +15,16 @@
         </v-btn> 
 
         <slot name="exportAction"></slot>
+        <v-menu  bottom left>
+            <v-btn  icon slot="activator">
+                <v-icon>more_vert</v-icon>
+            </v-btn> 
+            
+            <slot name="moreAction"></slot>
+
+        </v-menu>
 
 
     </v-toolbar>
 </template>
+
