@@ -131,7 +131,9 @@ export default {
             this.$router.push('/membership/'+uuid);
         },
         deleteRecord(item){
-            Members.splice(item)
+            const index = Members.indexOf(item)
+            console.log(item.uuid)
+            Members.splice(index,1)
         },
         exportToExcel(){
             var memberToExport = Members
