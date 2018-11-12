@@ -58,7 +58,7 @@
                 <td>
                     <v-btn depressed outline icon fab dark 
                         color="primary" small
-                        @click="editItem(props.item.uuid)"
+                        @click="editItem(props.item.id)"
                         >
                         <v-icon nuxt >edit</v-icon>
                     </v-btn>

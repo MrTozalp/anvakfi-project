@@ -1,10 +1,10 @@
 <template>
-    <member-form :editedMember="loadedMember" @submit="onSubmitted"/>
+    <member-form :loadedMember="loadedMember" @submit="onSubmitted"/>
 </template>
             
 
 <script>
-
+import axios from "axios";
 import MemberForm from '@/components/inside/form/MemberForm'
 export default {
     layout: 'inside',
@@ -15,19 +15,19 @@ export default {
         return axios
         .get(
             "https://anadolu-vakfi.firebaseio.com/members/" +
-            context.params.memberId +
+            context.params.id +
             ".json"
         )
         .then(res => {
             return {
-            loadedMember: { ...res.data, id: context.params.memberId }
+                loadedMember: { ...res.data, id: context.params.id }
             };
         })
         .catch(e => context.error());
     },
     methods: {
-        onSubmitted(editedMember) {
-            this.$store.dispatch("editMember", editedMember).then(() => {
+        onSubmitted(loadedMember) {
+            this.$store.dispatch("editMember", loadedMember).then(() => {
                 this.$router.push("/admin");
             });
         }

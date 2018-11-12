@@ -81,7 +81,7 @@ export default {
         FormButton
     },
     props:{
-        editedMember: {
+        loadedMember: {
             type: Object,
             required: false
         }
@@ -89,8 +89,8 @@ export default {
     data () {
         return {
             valid: true,
-            member:  this.editedMember
-            ? { ...this.editedMember }
+            member:  this.loadedMember
+            ? { ...this.loadedMember }
             : {
                 fullname: "",
                 email: "",

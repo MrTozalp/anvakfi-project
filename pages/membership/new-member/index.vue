@@ -5,7 +5,7 @@
             
 
 <script>
-import axios from "axios";
+
 import MemberForm from '@/components/inside/form/MemberForm'
 export default {
     layout: 'inside',
