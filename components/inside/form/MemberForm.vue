@@ -7,7 +7,7 @@
           <v-widget title="Yeni Üye" backTo="/membership" >
             <div slot="widget-content">
                 <v-container>
-                    <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
                     <FormInput                                        
                             >
                         <v-text-field slot="form-text-field2"
@@ -48,7 +48,7 @@
                         </v-flex>
                         <v-flex xs8>
                             <form-button 
-                                @click="submit"
+                               type="submit"
                                 color="primary">
                                 Kaydet
                             </form-button>
@@ -109,17 +109,9 @@ export default {
         }
     },
     methods: {
-        submit() {
-
-            if (this.$refs.form.validate()) {
-                
-                // Edit the member
-                if(this.editedMember) Object.assign(this.editedMember, this.member)
-                else Members.push(this.member)
-                // Save the member
-                this.$router.push("/membership")
-            }
-
+        onSave() {
+             if (this.$refs.form.validate())
+                this.$emit('submit', this.member)
         },
         onCancel() {
         // Navigate back

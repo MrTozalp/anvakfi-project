@@ -25,7 +25,7 @@
         <v-data-table
             :headers="tableConfig.headers"
             :search="search"
-            :items="tableConfig.items"
+            :items="records"
             :rows-per-page-items="tableConfig.rows_per_page_items"
             class="elevation-1"
             select-all
@@ -121,6 +121,10 @@ export default {
         DialogButton
     },
     props: {
+        records: {
+            type: Array,
+            required: true
+        },
         tableConfig: {
             type: Object,
             required: true
@@ -131,9 +135,7 @@ export default {
             this.$router.push('/membership/'+uuid);
         },
         deleteRecord(item){
-            const index = Members.indexOf(item)
-            console.log(item.uuid)
-            Members.splice(index,1)
+            this.$store.dispatch("deleteMember", item);
         },
         exportToExcel(){
             var memberToExport = Members
