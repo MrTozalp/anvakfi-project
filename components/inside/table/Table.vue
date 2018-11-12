@@ -105,6 +105,7 @@ export default {
                     col3: 'Email',
                     col4: 'Telefon',
                     col5: 'Meslek',
+                    col6: 'Adres'
                 }
             ],
             excelConfig : {
@@ -138,10 +139,10 @@ export default {
             this.$store.dispatch("deleteMember", item);
         },
         exportToExcel(){
-            var memberToExport = Members
+            var memberToExport = this.$store.getters.loadedMembers
             memberToExport.forEach(function(v){ 
-                delete v.uuid;
-                delete v.username;
+                delete v.id;
+                delete v.updatedDate;
             });
             var ws = XLSX.utils.json_to_sheet(this.excelHeader, 
                  {skipHeader: true})

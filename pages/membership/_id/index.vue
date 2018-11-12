@@ -28,7 +28,7 @@ export default {
     methods: {
         onSubmitted(loadedMember) {
             this.$store.dispatch("editMember", loadedMember).then(() => {
-                this.$router.push("/admin");
+                this.$router.push("/membership");
             });
         }
     }
