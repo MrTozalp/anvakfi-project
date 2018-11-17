@@ -3,7 +3,7 @@
     <v-card>
     <v-layout row v-if="error">
       <v-flex>
-        <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+        <app-alert @dismissed="onDismissed" :text="error.message | errorMessage"></app-alert>
       </v-flex>
     </v-layout>
       <v-card-text >

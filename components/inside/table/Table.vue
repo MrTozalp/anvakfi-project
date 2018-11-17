@@ -132,7 +132,7 @@ export default {
     },
     methods: {
         editItem (uuid) {
-            this.$router.push('/membership/'+uuid);
+            this.$router.push('/app/membership/'+uuid);
         },
         deleteRecord(item){
             this.$store.dispatch("deleteMember", item);
