@@ -4,7 +4,7 @@
     
       <v-layout row wrap>
         <v-flex sm12>
-          <v-widget title="Yeni Üye" backTo="/membership" >
+          <v-widget title="Yeni Üye" backTo="/app/membership" >
             <div slot="widget-content">
                 <v-container>
                     <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
@@ -115,7 +115,7 @@ export default {
         },
         onCancel() {
         // Navigate back
-            this.$router.push("/membership")
+            this.$router.push("/app/membership")
         }
     }
 }

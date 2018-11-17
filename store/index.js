@@ -82,8 +82,8 @@ const createStore = () => {
                     updatedDate: new Date()
                 }
                 return this.$axios
-                .$post
-                ("https://anadolu-vakfi.firebaseio.com/members.json?auth=" +vuexContext.state.token, createdMember)
+                .$post(
+                    "https://anadolu-vakfi.firebaseio.com/members.json?auth=" +vuexContext.state.token, createdMember)
                 .then(data => {
                     vuexContext.commit('addMember', {...createdMember, id: data.name})
                 })
@@ -100,9 +100,10 @@ const createStore = () => {
                 .catch(e => console.log(e))
             },
             deleteMember(vuexContext, deletedMember) {
-                return axios.delete("https://anadolu-vakfi.firebaseio.com/members/" +
+                return this.$axios
+                .$delete("https://anadolu-vakfi.firebaseio.com/members/" +
                 deletedMember.id +
-                ".json?auth/"+ vuexContext.state.token, deletedMember)
+                ".json?auth="+ vuexContext.state.token, deletedMember)
                 .then(res => {
                     vuexContext.commit('deleteMember', deletedMember)
                 })
