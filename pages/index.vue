@@ -22,6 +22,7 @@
 import Login from '@/components/Login.vue'
 
 export default {
+  middleware: ["router-auth"],
   components: {
     Login
   }

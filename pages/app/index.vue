@@ -18,6 +18,7 @@
 import CircleStatistic from '@/components/widgets/statistic/CircleStatistic';
 
 export default {
+  middleware: ["check-auth", "auth"],
     layout: 'inside',
     components: {
       CircleStatistic

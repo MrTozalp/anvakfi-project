@@ -53,8 +53,11 @@
             <v-subheader v-else-if="item.header" :key="i">{{ item.header }}</v-subheader>
             <v-divider v-else-if="item.divider" :key="i"></v-divider>
             <!--top-level link-->
-            <v-list-tile v-else :to="!item.href ? { name: item.name } : null" :href="item.href" ripple="ripple" :disabled="item.disabled" :target="item.target" rel="noopener" :key="item.name">
-              <v-list-tile-action v-if="item.icon">
+            <v-list-tile v-else :to="!item.href ? { name: item.name } : null" :href="item.href" 
+            ripple="ripple" :disabled="item.disabled" 
+            :target="item.target" rel="noopener" @click="item.click" 
+            :key="item.name">
+              <v-list-tile-action v-if="item.icon"   >
                 <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
@@ -66,6 +69,16 @@
               </v-list-tile-action>
               <!-- <v-circle class="caption blue lighten-2 white--text mx-0" v-else-if="item.chip" label="label" small="small">{{ item.chip }}</v-circle> -->
             </v-list-tile>
+        </template>
+        <template>
+          <v-list-tile slot="activator" ripple="ripple">
+              <v-list-tile-action    >
+                <v-icon>exit_to_app</v-icon>
+              </v-list-tile-action>
+                <v-list-tile-content>
+                <v-list-tile-title>Çıkış</v-list-tile-title>
+              </v-list-tile-content>
+          </v-list-tile>
         </template>
       </v-list>        
     </vue-perfect-scrollbar>        
@@ -122,6 +135,11 @@ export default {
       }
       return { name: `${item.group}/${(subItem.name)}` };
     },
+    onLogout() {
+      this.$store.dispatch("logout");
+      this.$router.push("/auth");
+    }
+    
   }
 };
 </script>

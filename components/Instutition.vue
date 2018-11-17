@@ -10,6 +10,7 @@
             v-model="selectedInstutition"
             :items="instutions"
             prepend-icon="fa-city"
+            :search-input.sync="selectedInstutition"
           >
           </v-autocomplete>
         </v-container>
@@ -30,10 +31,11 @@
       }
     },
     watch: {
-      selectedInstutition: function (val) {
-        console.log(val);
-        if(val === 'Anadolu Eğitim ve Kültür Vakfı')
-          this.$emit('instutionAdded', 'http://vitalisweb.net/anadoluvakfi/img/ico/Logo.png');
+      selectedInstutition(val){
+          if(val === 'Anadolu Eğitim ve Kültür Vakfı')
+            this.$emit('instutionAdded', 'http://vitalisweb.net/anadoluvakfi/img/ico/Logo.png')
+          else return
+
       }
     }
   }

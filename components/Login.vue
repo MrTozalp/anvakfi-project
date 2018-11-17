@@ -1,45 +1,50 @@
 <template>
-
-  <v-form >
-    <v-card>
-      <v-card-text>
-        <logo v-if="isInstSelected" @instutionEdit="selectInstutition" :logoSrc="logoSrc"></logo>
-        <instutition v-else @instutionAdded="selectInstutition"/>
-      </v-card-text>
-    </v-card>     
+  <form  @submit.prevent="onSignin">
+    <v-layout row v-if="error">
+      <v-flex xs12 sm6 offset-sm3>
+        <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
+      </v-flex>
+    </v-layout>
+    
     <v-card>
       <v-card-text >
         <v-text-field
           prepend-icon="person"
           type="text"
           :counter="10"
-          label="Kullanıcı Adı"
-          :disabled = "isInstSelected == false"
+          label="Email"
+          v-model="email"
+          :disabled = "!isInstSelected"
           required
         ></v-text-field>
         <v-text-field
           prepend-icon="lock"
-          :disabled = "isInstSelected == false"
+          :disabled = "!isInstSelected"
           type="password"
+          v-model="password"
           label="Parola"
           required
         ></v-text-field>
         </v-card-text>
         <v-spacer/>
               <v-btn
+              type="submit"
                 color="primary"
                 flat
-                :disabled = "isInstSelected == false"
-                nuxt
-                to="/home">GİRİŞ YAP</v-btn>
+                :disabled = "!isInstSelected "
+                :loading="loading">GİRİŞ YAP
+                <span slot="loader" class="custom-loader">
+                        <v-icon light>cached</v-icon>
+                       </span>
+                </v-btn>
     </v-card>
-  </v-form>
-  
+  </form>
 </template>
 
 <script>
 import Instutition from '@/components/Instutition.vue'
 import Logo from '@/components/Logo.vue'
+import { mapGetters } from 'vuex'
 export default {
   components: {
     Instutition,
@@ -48,7 +53,9 @@ export default {
   data () {
     return {
       logoSrc: '',
-      isInstSelected : false
+      isInstSelected : true,
+      email: '',
+      password: ''
     }
   },
   methods: {
@@ -59,6 +66,22 @@ export default {
           this.isInstSelected = true;
         }
       }
+  },
+  computed: {
+    ...mapGetters([ 'loading', 'error'])
+  },
+  methods: {
+    onSignin () {
+      this.$store.dispatch("authenticateUser", {
+        email: this.email,
+        password: this.password
+      }).then(() => {
+        this.$router.push('/app');
+      });
+    },
+    onDismissed () {
+      this.$store.dispatch('clearError')
+    }
   }
 }
 </script>

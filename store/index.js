@@ -1,14 +1,26 @@
 import Vuex from "vuex";
-import axios from "axios";
+import Cookie from "js-cookie";
 
 const createStore = () => {
     return new Vuex.Store({
         state: {
-            members: []
+            members: [],
+            loading: false,
+            error: null,
+            token: null
         },
         getters: {
+            isAuthenticated(state){
+                return state.token != null;
+            },
             loadedMembers(state) {
                 return state.members;
+            },
+            loading (state) {
+                return state.loading
+            },
+            error (state) {
+                return state.error
             }
         },
         mutations: {
@@ -29,16 +41,29 @@ const createStore = () => {
                     member => member.id === deletedMember.id
                 );
                 state.members.splice(memberIndex,1);
+            },
+            setToken(state, token) {
+                state.token = token;
+            },
+            setLoading (state, payload) {
+                state.loading = payload
+            },
+            setError (state, payload) {
+                state.error = payload
+            },
+            clearError (state) {
+                state.error = null
             }
+
         },
         actions: {
             nuxtServerInit(vuexContext,context) {
-                return axios
-                    .get("https://anadolu-vakfi.firebaseio.com/members.json")
-                    .then(res => {
+                return context.app.$axios
+                    .$get("/members.json")
+                    .then(data => {
                         const membersArray = [];
-                        for(const key in res.data){
-                            membersArray.push({ ...res.data[key], id: key });
+                        for(const key in data){
+                            membersArray.push({ ...data[key], id: key });
                         }
                         vuexContext.commit("setMembers", membersArray);
                     })
@@ -49,17 +74,19 @@ const createStore = () => {
                     ...member,
                     updatedDate: new Date()
                 }
-                return axios
-                .post("https://anadolu-vakfi.firebaseio.com/members.json", createdMember)
-                .then(result => {
-                    vuexContext.commit('addMember', {...createdMember, id: result.data.name})
+                return this.$axios
+                .$post
+                ("https://anadolu-vakfi.firebaseio.com/members.json?auth=" +vuexContext.state.token, createdMember)
+                .then(data => {
+                    vuexContext.commit('addMember', {...createdMember, id: data.name})
                 })
                 .catch(e => console.log(e));
             },
             editMember(vuexContext, editedMember) {
-                return axios.put("https://anadolu-vakfi.firebaseio.com/members/" +
+                return this.$axios
+                .$put("https://anadolu-vakfi.firebaseio.com/members/" +
                 editedMember.id +
-                ".json", editedMember)
+                ".json?auth=" + vuexContext.state.token, editedMember)
                 .then(res => {
                     vuexContext.commit('editMember', editedMember)
                 })
@@ -68,12 +95,75 @@ const createStore = () => {
             deleteMember(vuexContext, deletedMember) {
                 return axios.delete("https://anadolu-vakfi.firebaseio.com/members/" +
                 deletedMember.id +
-                ".json", deletedMember)
+                ".json?auth/"+ vuexContext.state.token, deletedMember)
                 .then(res => {
                     vuexContext.commit('deleteMember', deletedMember)
                 })
                 .catch(e => console.log(e))
-            }
+            },
+            authenticateUser(vuexContext, authData) {
+                let authUrl =
+                  "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=" +
+                  process.env.fbAPIKey;
+                return this.$axios
+                  .$post(authUrl, {
+                    email: authData.email,
+                    password: authData.password,
+                    returnSecureToken: true
+                  })
+                  .then(result => {
+                    vuexContext.commit("setToken", result.idToken);
+                    localStorage.setItem("token", result.idToken);
+                    localStorage.setItem(
+                      "tokenExpiration",
+                      new Date().getTime() + Number.parseInt(result.expiresIn) * 1000
+                    );
+                    Cookie.set("jwt", result.idToken);
+                    Cookie.set(
+                      "expirationDate",
+                      new Date().getTime() + Number.parseInt(result.expiresIn) * 1000
+                    );
+                  })
+                  .catch(e => console.log(e));
+              },
+              initAuth(vuexContext, req) {
+                let token;
+                let expirationDate;
+                if (req) {
+                  if (!req.headers.cookie) {
+                    return;
+                  }
+                  const jwtCookie = req.headers.cookie
+                    .split(";")
+                    .find(c => c.trim().startsWith("jwt="));
+                  if (!jwtCookie) {
+                    return;
+                  }
+                  token = jwtCookie.split("=")[1];
+                  expirationDate = req.headers.cookie
+                    .split(";")
+                    .find(c => c.trim().startsWith("expirationDate="))
+                    .split("=")[1];
+                } else {
+                  token = localStorage.getItem("token");
+                  expirationDate = localStorage.getItem("tokenExpiration");
+                }
+                if (new Date().getTime() > +expirationDate || !token) {
+                  console.log("No token or invalid token");
+                  vuexContext.dispatch("logout");
+                  return;
+                }
+                vuexContext.commit("setToken", token);
+              },
+              logout(vuexContext) {
+                vuexContext.commit("clearToken");
+                Cookie.remove("jwt");
+                Cookie.remove("expirationDate");
+                if (process.client) {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("tokenExpiration");
+                }
+              }
         }
     });
 };

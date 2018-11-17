@@ -7,8 +7,6 @@
       sm8
       md6>
       <div class="text-xs-center">
-        
-        
         <login/>
         </div>
 
@@ -21,6 +19,7 @@
 import Login from '@/components/Login.vue'
 
 export default {
+  middleware: ["check-auth", "auth"],
   components: {
     Login
   }

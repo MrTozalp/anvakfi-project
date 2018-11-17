@@ -4,7 +4,6 @@
             
 
 <script>
-import axios from "axios";
 import MemberForm from '@/components/inside/form/MemberForm'
 export default {
     layout: 'inside',
@@ -12,15 +11,15 @@ export default {
         MemberForm
     },
     asyncData(context) {
-        return axios
-        .get(
-            "https://anadolu-vakfi.firebaseio.com/members/" +
+        return context.app.$axios
+        .$get(
+            "/members/" +
             context.params.id +
             ".json"
         )
-        .then(res => {
+        .then(data => {
             return {
-                loadedMember: { ...res.data, id: context.params.id }
+                loadedMember: { ...data, id: context.params.id }
             };
         })
         .catch(e => context.error());
@@ -28,7 +27,7 @@ export default {
     methods: {
         onSubmitted(loadedMember) {
             this.$store.dispatch("editMember", loadedMember).then(() => {
-                this.$router.push("/membership");
+                this.$router.push("/app/membership");
             });
         }
     }

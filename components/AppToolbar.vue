@@ -42,7 +42,13 @@
           </v-avatar>
         </v-btn>
         <v-list class="pa-0">
-          <v-list-tile v-for="(item,index) in items" :to="!item.href ? { name: item.name } : null" :href="item.href" @click="item.click" ripple="ripple" :disabled="item.disabled" :target="item.target" rel="noopener" :key="index">
+          <v-list-tile v-for="(item,index) in items" :to="!item.href ? 
+          { name: item.name } : null" 
+          :href="item.href" @click="item.click" 
+          ripple="ripple" 
+          :disabled="item.disabled" 
+          :target="item.target" rel="noopener" 
+          :key="index">
             <v-list-tile-action v-if="item.icon">
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -55,52 +61,56 @@
   </v-toolbar>
 </template>
 <script>
-import NotificationList from '@/components/widgets/list/NotificationList';
-import Util from '@/util';
+import NotificationList from "@/components/widgets/list/NotificationList";
+import Util from "@/util";
 export default {
-  name: 'app-toolbar',
+  name: "app-toolbar",
   components: {
     NotificationList
   },
   data: () => ({
     items: [
       {
-        icon: 'account_circle',
-        href: '#',
-        title: 'Profile',
-        click: (e) => {
+        icon: "account_circle",
+        href: "#",
+        title: "Profile",
+        click: e => {
           console.log(e);
         }
       },
       {
-        icon: 'settings',
-        href: '#',
-        title: 'Settings',
-        click: (e) => {
+        icon: "settings",
+        href: "#",
+        title: "Settings",
+        click: e => {
           console.log(e);
         }
       },
       {
-        icon: 'fullscreen_exit',
-        href: '#',
-        title: 'Logout',
-        click: (e) => {
-          window.getApp.$emit('APP_LOGOUT');
+        icon: "fullscreen_exit",
+        href: "#",
+        title: "Logout",
+        click: e => {
+          window.getApp.$emit("APP_LOGOUT");
         }
       }
-    ],
+    ]
   }),
   computed: {
-    toolbarColor () {
+    toolbarColor() {
       return this.$vuetify.options.extra.mainNav;
     }
   },
   methods: {
-    handleDrawerToggle () {
-      window.getApp.$emit('APP_DRAWER_TOGGLED');
+    handleDrawerToggle() {
+      window.getApp.$emit("APP_DRAWER_TOGGLED");
     },
-    handleFullScreen () {
+    handleFullScreen() {
       Util.toggleFullScreen();
+    },
+    onLogout() {
+      this.$store.dispatch("logout");
+      this.$router.push("/auth");
     }
   }
 };

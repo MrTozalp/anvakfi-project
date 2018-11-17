@@ -20,6 +20,7 @@
 import InsideHeader from '@/components/inside/InsideHeader.vue'
 import Breadcrumb from '@/components/Breadcrumb';
 export default {
+  
   components: {
     InsideHeader,
     Breadcrumb
