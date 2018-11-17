@@ -90,6 +90,7 @@ const createStore = () => {
                 .catch(e => console.log(e));
             },
             editMember(vuexContext, editedMember) {
+                console.log("edited member id : " +editedMember.id)
                 return this.$axios
                 .$put("https://anadolu-vakfi.firebaseio.com/members/" +
                 editedMember.id +

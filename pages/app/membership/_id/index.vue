@@ -19,7 +19,7 @@ export default {
         )
         .then(data => {
             return {
-                loadedMember: data
+                loadedMember: {...data, id: context.params.id}
             };
         })
         .catch(e => context.error());
