@@ -74,7 +74,7 @@
 <script>
 import menu from '@/static/menu';
   export default {
-    
+
     data: () => ({
       drawer: null,
       items: menu
@@ -83,10 +83,10 @@ import menu from '@/static/menu';
       source: String
     },
     methods: {
-
       onLogout() {
         this.$store.dispatch("logout");
         this.$router.push("/auth");
+        
       }
     }
   }

@@ -2,7 +2,6 @@
   <v-app>
     <InsideHeader />
     <v-content >
-      <Breadcrumb />
       <v-container fluid grid-list-xl  >
 
           <router-view >

@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import { Items as Users } from '@/static/user';
   export default {
     layout: 'inside',
       data () {

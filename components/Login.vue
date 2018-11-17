@@ -1,12 +1,11 @@
 <template>
   <form  @submit.prevent="onSignin">
+    <v-card>
     <v-layout row v-if="error">
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex>
         <app-alert @dismissed="onDismissed" :text="error.message"></app-alert>
       </v-flex>
     </v-layout>
-    
-    <v-card>
       <v-card-text >
         <v-text-field
           prepend-icon="person"

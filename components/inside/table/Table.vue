@@ -86,7 +86,6 @@
 import XLSX from 'xlsx'
 import DialogButton from '@/components/inside/Dialog'
 import TblToolbar from '@/components/inside/table/Toolbar'
-import { Items as Members } from '@/static/user'
 export default {
     data() {
         return {

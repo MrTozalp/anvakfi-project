@@ -9,22 +9,16 @@
       sm8
       md4>
       <div class="text-xs-center">
-        
-        <login/>
-        </div>
-
+       </div>
     </v-flex>
   </v-layout>
+
 </template>
 
 <script>
-
-import Login from '@/components/Login.vue'
-
 export default {
-  middleware: ["router-auth"],
-  components: {
-    Login
-  }
+  middleware: ["check-auth", "auth"]
 }
 </script>
+
+

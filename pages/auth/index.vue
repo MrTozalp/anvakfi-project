@@ -19,7 +19,6 @@
 import Login from '@/components/Login.vue'
 
 export default {
-  middleware: ["check-auth", "auth"],
   components: {
     Login
   }

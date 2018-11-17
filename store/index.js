@@ -53,6 +53,10 @@ const createStore = () => {
             },
             clearError (state) {
                 state.error = null
+            },
+
+            clearToken(state) {
+                state.token = null;
             }
 
         },
@@ -68,6 +72,9 @@ const createStore = () => {
                         vuexContext.commit("setMembers", membersArray);
                     })
                     .catch(e => context.error(e));
+            },
+            clearError ({commit}) {
+                commit('clearError')
             },
             addMember(vuexContext, member) {
                 const createdMember = {
@@ -102,6 +109,8 @@ const createStore = () => {
                 .catch(e => console.log(e))
             },
             authenticateUser(vuexContext, authData) {
+                vuexContext.commit('setLoading', true)
+                vuexContext.commit('clearError')
                 let authUrl =
                   "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=" +
                   process.env.fbAPIKey;
@@ -112,6 +121,7 @@ const createStore = () => {
                     returnSecureToken: true
                   })
                   .then(result => {
+                    vuexContext.commit('setLoading', false)
                     vuexContext.commit("setToken", result.idToken);
                     localStorage.setItem("token", result.idToken);
                     localStorage.setItem(
@@ -124,7 +134,11 @@ const createStore = () => {
                       new Date().getTime() + Number.parseInt(result.expiresIn) * 1000
                     );
                   })
-                  .catch(e => console.log(e));
+                  .catch(error => {
+                    vuexContext.commit('setLoading', false)
+                    vuexContext.commit('setError', error.response.data.error)
+                  }
+                )
               },
               initAuth(vuexContext, req) {
                 let token;

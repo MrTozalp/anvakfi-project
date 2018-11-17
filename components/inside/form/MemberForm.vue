@@ -70,7 +70,7 @@
             
 
 <script>
-import { Items as Members } from '@/static/user'
+
 import VWidget from '@/components/VWidget'
 import FormInput from '@/components/inside/form/FormInput'
 import FormButton from '@/components/inside/form/FormButton'

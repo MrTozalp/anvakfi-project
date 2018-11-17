@@ -1,4 +1,5 @@
 <template>
+
   <v-layout row wrap>
     <v-flex lg4 sm12 v-for="(item,index) in trending2" :key="'c-trending'+index">
         <circle-statistic
@@ -18,8 +19,8 @@
 import CircleStatistic from '@/components/widgets/statistic/CircleStatistic';
 
 export default {
-  middleware: ["check-auth", "auth"],
     layout: 'inside',
+    middleware: ["check-auth", "auth"],
     components: {
       CircleStatistic
   },
