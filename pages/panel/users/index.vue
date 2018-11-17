@@ -89,8 +89,7 @@
                 text: 'İşlem',
                 value: ''
               },
-            ],
-            items: Users
+            ]
           }
         }
       }
