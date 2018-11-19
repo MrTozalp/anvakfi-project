@@ -23,6 +23,10 @@ export default {
   components: {
     InsideHeader,
     Breadcrumb
+  },
+
+  created(){
+    this.$store.dispatch("loadMembers");
   }
 }
 </script>

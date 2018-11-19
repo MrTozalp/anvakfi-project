@@ -61,15 +61,15 @@ const createStore = () => {
 
         },
         actions: {
-            nuxtServerInit(vuexContext,context) {
-                return context.app.$axios
+            loadMembers({commit}) {
+                return this.$axios
                     .$get("/members.json")
                     .then(data => {
                         const membersArray = [];
                         for(const key in data){
                             membersArray.push({ ...data[key], id: key });
                         }
-                        vuexContext.commit("setMembers", membersArray);
+                        commit("setMembers", membersArray);
                     })
                     .catch(e => context.error(e));
             },
