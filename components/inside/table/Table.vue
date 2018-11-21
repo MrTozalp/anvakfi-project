@@ -22,6 +22,13 @@
 
 
         </TblToolbar>
+        <v-progress-circular
+          indeterminate
+          class="primary--text"
+          :width="7"
+          :size="70"
+          v-if="loading"></v-progress-circular>
+
         <v-data-table
             :headers="tableConfig.headers"
             :search="search"
@@ -31,15 +38,19 @@
             select-all
             v-model="selected"
             item-key="uuid"
-        >
+            v-if="!loading"
+        >   
+
             <template slot="no-data">
                 <v-alert :value="true" color="error" icon="warning">
                     Üzgünüm, listede kayıt bulunmamaktadır :(
                 </v-alert>
             </template>
+
             <v-alert slot="no-results" :value="true" color="error" icon="warning">
                  "{{ search }}" aramasına göre sonuç bulunmamaktadır :(
             </v-alert>
+
 
             <template slot="items" slot-scope="props">
                 <td>
@@ -77,7 +88,10 @@
                         </v-btn>
                     </dialog-button>
                 </td> 
-            </template>
+
+
+        </template>
+
         </v-data-table>
     </div>
 </template>
@@ -86,6 +100,7 @@
 import XLSX from 'xlsx'
 import DialogButton from '@/components/inside/Dialog'
 import TblToolbar from '@/components/inside/table/Toolbar'
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -129,6 +144,9 @@ export default {
             type: Object,
             required: true
         }
+    },
+    computed: {
+        ...mapGetters([ 'loading', 'error'])
     },
     methods: {
         editItem (uuid) {

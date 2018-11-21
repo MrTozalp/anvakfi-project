@@ -62,6 +62,7 @@ const createStore = () => {
         },
         actions: {
             loadMembers({commit}) {
+                commit('setLoading', true)
                 return this.$axios
                     .$get("/members.json")
                     .then(data => {
@@ -70,8 +71,12 @@ const createStore = () => {
                             membersArray.push({ ...data[key], id: key });
                         }
                         commit("setMembers", membersArray);
+                        commit('setLoading', false);
                     })
-                    .catch(e => context.error(e));
+                    .catch(e => {
+                        commit('setLoading', false)
+                        context.error(e)
+                    });
             },
             clearError ({commit}) {
                 commit('clearError')

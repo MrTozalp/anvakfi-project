@@ -1,7 +1,7 @@
 <template>
   <v-toolbar
     color="primary"
-    fixed
+    absolute 
     dark
     app
     >

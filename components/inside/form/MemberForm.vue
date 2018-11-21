@@ -12,7 +12,11 @@
                             >
                         <v-text-field slot="form-text-field2"
                             v-model="member.identityNumber"
-                            label="Kimlik No"    
+                            mask="###########"
+                            counter
+                            maxlength="11"
+                            minlength="11"
+                            label="Kimlik No"
                         ></v-text-field>
                         <v-text-field slot="form-text-field1"
                             v-model="member.fullname"
@@ -29,7 +33,8 @@
                         ></v-text-field>
                         <v-text-field slot="form-text-field2"
                             v-model="member.phone"
-                            label="Telefon" 
+                            label="Telefon"
+                            mask="(###) ### - ####"
                             :rules="[rules.required]"
                         ></v-text-field>
                     </FormInput>

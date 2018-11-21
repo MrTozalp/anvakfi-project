@@ -1,13 +1,16 @@
 <template>
   <div>
     <v-navigation-drawer
+    id="appDrawer"
       v-model="drawer"
-      clipped
+      fixed
       class="grey lighten-4 elevation-12"
       app
+      width="260"
     >
       <v-list
         dense
+        expand
         class="grey lighten-4"
       >
         <template v-for="(item, i) in items">
@@ -17,7 +20,7 @@
             row
             align-center
           >
-            <v-flex xs6>
+            <v-flex >
               <v-subheader v-if="item.heading">
                 {{ item.heading }}
               </v-subheader>
@@ -44,7 +47,6 @@
             </v-list-tile-content>
           </v-list-tile>
         </template>
-
           <v-list-tile
              @click="onLogout"
           >
@@ -60,10 +62,11 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="amber" 
-      app 
-      clipped-left
+      app
+      absolute 
+      
       >
-      <v-toolbar-side-icon @click.native="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <span class="title ml-3 mr-5">Bzm&nbsp;<span class="font-weight-light">Vakıf</span></span>
       <v-spacer></v-spacer>
 
@@ -72,12 +75,17 @@
 </template>
 
 <script>
-import menu from '@/static/menu';
+import menu from '@/static/menu'
   export default {
+    name: 'app-drawer',
 
     data: () => ({
-      drawer: null,
-      items: menu
+      mini: false,
+      drawer: true,
+      items: menu,
+      scrollSettings: {
+        maxScrollbarLength: 160
+      }    
     }),
     props: {
       source: String
@@ -93,9 +101,13 @@ import menu from '@/static/menu';
 </script>
 
 <style lang="stylus" scoped>
-  #keep
-    .v-navigation-drawer__border
-      display: none
+
+#appDrawer
+  overflow: hidden
+  .drawer-menu--scroll
+    height: calc(100vh - 48px)
+    overflow: auto
+
 </style>
 
 
