@@ -1,13 +1,7 @@
 <template>
 <v-app>
     <Header/>
-    <v-progress-circular
-      indeterminate
-      class="primary--text"
-      :width="7"
-      :size="70"
-      v-if="loading"></v-progress-circular>
-    <v-content v-if="!loading">
+    <v-content >
       <v-container fluid >
         <router-view>
           <nuxt />
@@ -21,14 +15,11 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-import { mapGetters } from 'vuex'
+
 export default {
   components: {
     Header,
     Footer
-  },
-  computed: {
-      ...mapGetters([ 'loading', 'error'])
   }
 }
 </script>
