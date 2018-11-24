@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TblToolbar :moreItems="moreItems" >
+        <TblToolbar >
             <v-text-field
                 flat solo hide-details
                 v-model="search"
@@ -9,11 +9,12 @@
                 placeholder="Filtrele"
                 class="hidden-sm-and-down"
             ></v-text-field>
-            <v-btn slot="exportAction" icon @click="exportToExcel">
+            <v-btn slot="exportAction" icon 
+                @click="exportToExcel" 
+                v-show="toolbarConfig.exportAction">
                 <v-icon>get_app</v-icon>
             </v-btn> 
-
-            <v-list slot="moreAction">
+            <v-list slot="moreAction" v-show="toolbarConfig.moreAction">
                 <v-list-tile >
                     <v-icon>get_app</v-icon>
                     <v-list-tile-title @click="exportToWord">Adres Etiketi Al</v-list-tile-title>
@@ -22,12 +23,6 @@
 
 
         </TblToolbar>
-        <v-progress-circular
-          indeterminate
-          class="primary--text"
-          :width="7"
-          :size="70"
-          v-if="loading"></v-progress-circular>
 
         <v-data-table
             :headers="tableConfig.headers"
@@ -37,8 +32,7 @@
             class="elevation-1"
             select-all
             v-model="selected"
-            item-key="uuid"
-            v-if="!loading"
+            item-key="id"
         >   
 
             <template slot="no-data">
@@ -60,20 +54,22 @@
                         v-model="props.selected"
                     ></v-checkbox>
                 </td>
-                <td>{{ props.item.identityNumber }}</td>
-                <td>{{ props.item.fullname }}</td>
-                <td>{{ props.item.email }}</td>
-                <td>{{ props.item.phone }}</td>
-                <td>{{ props.item.jobTitle }}</td>
+
+                <td v-for="(header,index) in tableConfig.headers" :key="index">
+                    {{ 
+                        { 
+                            value: props.item[header.value],
+                            filter: header.filter
+                        }   | column
+                    }}
+                    </td>
                 
-                <td>
                     <v-btn depressed outline icon fab dark 
                         color="primary" small
                         @click="editItem(props.item.id)"
                         >
                         <v-icon nuxt >edit</v-icon>
                     </v-btn>
-
                     <dialog-button 
                         headline="Kayıt Silme" 
                         content="Kaydı silmek istiyor musunuz?"
@@ -87,9 +83,6 @@
                             <v-icon>delete</v-icon>
                         </v-btn>
                     </dialog-button>
-                </td> 
-
-
         </template>
 
         </v-data-table>
@@ -101,34 +94,12 @@ import XLSX from 'xlsx'
 import DialogButton from '@/components/inside/Dialog'
 import TblToolbar from '@/components/inside/table/Toolbar'
 import { mapGetters } from 'vuex'
+
 export default {
     data() {
         return {
             selected: [],
-            search: '',
-            moreItems: [
-                {
-                    title: 'Adres Etiketi Al', 
-                    icon : 'get_app'
-                }
-            ],
-            excelHeader : [
-                {
-                    col1: 'Kimlik No',
-                    col2: 'Ad Soyad',
-                    col3: 'Email',
-                    col4: 'Telefon',
-                    col5: 'Meslek',
-                    col6: 'Adres'
-                }
-            ],
-            excelConfig : {
-                skipHeader: true,
-                origin: "A2",
-                header: [ "identityNumber", "fullname", "email", "phone","jobTitle" ],
-            }
-                
-            
+            search: ''
         }
     },
     components: {
@@ -143,17 +114,28 @@ export default {
         tableConfig: {
             type: Object,
             required: true
+        },
+        toolbarConfig: {
+            type: Object,
+            required: true
         }
     },
     computed: {
-        ...mapGetters([ 'loading', 'error'])
+        ...mapGetters([ 'error'])
     },
     methods: {
+        prepareColumn(item, header){
+            let col = item[header.value]; 
+            if( header.filter === 'phone' ) 
+                this.$filters.phone(col)
+            return col
+        },
         editItem (uuid) {
-            this.$router.push('/app/membership/'+uuid);
+            const currentPath = this.$route.path
+            this.$router.push(currentPath+'/'+uuid)
         },
         deleteRecord(item){
-            this.$store.dispatch("deleteMember", item);
+            this.$store.dispatch("deleteMember", item)
         },
         exportToExcel(){
             var memberToExport = this.$store.getters.loadedMembers
@@ -161,9 +143,24 @@ export default {
                 delete v.id;
                 delete v.updatedDate;
             });
-            var ws = XLSX.utils.json_to_sheet(this.excelHeader, 
+            const excelHeader = []
+            let excelHeaderObject = {}
+            const excelConfig = {
+                skipHeader: true,
+                origin: "A2",
+                header: []
+            }
+            this.tableConfig.headers.forEach(function (item, index) {
+
+                excelHeaderObject["col"+index] = item.text
+                excelConfig.header.push( item.value )
+            })
+            excelHeader.push(excelHeaderObject)
+            console.log(excelHeader)
+            console.log(excelConfig)
+            var ws = XLSX.utils.json_to_sheet(excelHeader, 
                  {skipHeader: true})
-            XLSX.utils.sheet_add_json(ws, memberToExport, this.excelConfig)
+            XLSX.utils.sheet_add_json(ws, memberToExport, excelConfig)
             var wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, ws, 'search') 
             XLSX.writeFile(wb, 'üye listesi.xlsx')

@@ -4,47 +4,33 @@
     
       <v-layout row wrap>
         <v-flex lg12>
-          <v-widget :title="formTitle" backTo="/app/membership" >
+          <v-widget :title="formTitle" backTo="/app/branches" >
             <div slot="widget-content">
                 <v-container>
                     <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
                     <FormInput                                        
                             >
-                        <v-text-field slot="form-text-field2"
-                            v-model="member.identityNumber"
-                            mask="###########"
-                            counter
-                            maxlength="11"
-                            minlength="11"
-                            label="Kimlik No"
-                        ></v-text-field>
                         <v-text-field slot="form-text-field1"
-                            v-model="member.fullname"
-                            label="Ad Soyad"    
+                            v-model="branch.branchName"
+                            label="Şube Adı"
+                            :rules="[rules.required]"
+                        ></v-text-field>
+                        <v-text-field slot="form-text-field2"
+                            v-model="branch.branchPhone"
+                             label="Telefon"
+                            mask="(###) ### - ####"
                             :rules="[rules.required]"
                         ></v-text-field>
                     </FormInput>
 
                     <FormInput>
-                        <v-text-field slot="form-text-field1"
-                            v-model="member.email"
-                            label="Email" 
-                            :rules="[rules.required,rules.email]"   
-                        ></v-text-field>
-                        <v-text-field slot="form-text-field2"
-                            v-model="member.phone"
-                            label="Telefon"
+                             <v-text-field slot="form-text-field1"
+                            v-model="branch.branchFax"
+                             label="Faks"
                             mask="(###) ### - ####"
-                            :rules="[rules.required]"
-                        ></v-text-field>
-                    </FormInput>
-                    <FormInput>
-                        <v-text-field slot="form-text-field1"
-                            v-model="member.jobTitle"
-                            label="Meslek" 
                         ></v-text-field>
                         <v-textarea slot="form-text-field2"
-                            v-model="member.address"
+                            v-model="branch.branchAddress"
                             label="Adres" 
                         ></v-textarea>
                     </FormInput>
@@ -86,46 +72,40 @@ export default {
         FormButton
     },
     props:{
-        loadedMember: {
+        loadedBranch: {
             type: Object,
             required: false
         }
     },
     computed: {
         formTitle() {
-            return this.loadedMember==null ? 'Yeni Üye' : 'Üye Güncelle'
+            return this.loadedBranch==null ? 'Yeni Üye' : 'Üye Güncelle'
         }
     },
     data () {
         return {
             valid: true,
-            member:  this.loadedMember
-            ? { ...this.loadedMember }
+            branch:  this.loadedBranch
+            ? { ...this.loadedBranch }
             : {
-                fullname: "",
-                email: "",
-                identityNumber: "",
-                phone: "",
-                jobTitle: "",
-                address: ""
+                branchName: "",
+                branchAddress: "",
+                branchPhone: "",
+                branchFax: ""
             },
             rules: {
-                required: (value) => !!value || 'Zorunlu',
-                email: (value) => {
-                const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return pattern.test(value) || 'Geçersiz email';
-                }    
+                required: (value) => !!value || 'Zorunlu'    
             }  
         }
     },
     methods: {
         onSave() {
              if (this.$refs.form.validate())
-                this.$emit('submit', this.member)
+                this.$emit('submit', this.branch)
         },
         onCancel() {
         // Navigate back
-            this.$router.push("/app/membership")
+            this.$router.push("/app/branches")
         }
     }
 }

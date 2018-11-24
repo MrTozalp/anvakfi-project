@@ -5,6 +5,8 @@ const createStore = () => {
     return new Vuex.Store({
         state: {
             members: [],
+            groups: [],
+            branches: [],
             loading: false,
             error: null,
             token: null
@@ -16,6 +18,12 @@ const createStore = () => {
             loadedMembers(state) {
                 return state.members;
             },
+            loadedGroups(state){
+                return state.groups;
+            },
+            loadedBranches(state){
+                return state.branches;
+            },
             loading (state) {
                 return state.loading
             },
@@ -25,7 +33,7 @@ const createStore = () => {
         },
         mutations: {
             setMembers(state, members) {
-                state.members = members;
+                state.members = members
             },
             addMember(state, member) {
                 state.members.push(member)
@@ -41,6 +49,18 @@ const createStore = () => {
                     member => member.id === deletedMember.id
                 );
                 state.members.splice(memberIndex,1);
+            },
+            setBranches(state, branches) {
+                state.branches = branches
+            },
+            addBranch(state, branch) {
+                state.branches.push(branch)
+            },
+            editBranch(state, editedBranch) {
+                const branchIndex = state.branches.findIndex(
+                  branch => branch.id === editedBranch.id
+                );
+                state.branches[branchIndex] = editedBranch
             },
             setToken(state, token) {
                 state.token = token;
@@ -78,9 +98,6 @@ const createStore = () => {
                         context.error(e)
                     });
             },
-            clearError ({commit}) {
-                commit('clearError')
-            },
             addMember(vuexContext, member) {
                 const createdMember = {
                     ...member,
@@ -114,6 +131,50 @@ const createStore = () => {
                     vuexContext.commit('deleteMember', deletedMember)
                 })
                 .catch(e => console.log(e))
+            },
+            loadBranches({commit}){
+                commit('setLoading', true)
+                return this.$axios
+                    .$get("/branches.json")
+                    .then(data => {
+                        const branchesArray = [];
+                        for(const key in data){
+                            branchesArray.push({ ...data[key], id: key });
+                        }
+                        commit("setBranches", branchesArray);
+                        commit('setLoading', false);
+                    })
+                    .catch(e => {
+                        commit('setLoading', false)
+                        context.error(e)
+                    });
+            },
+            addBranch(vuexContext, branch) {
+                const createdBranch = {
+                    ...branch,
+                    updatedDate: new Date()
+                }
+                return this.$axios
+                .$post(
+                    "https://anadolu-vakfi.firebaseio.com/branches.json?auth=" +vuexContext.state.token, createdBranch)
+                .then(data => {
+                    vuexContext.commit('addBranch', {...createdBranch, id: data.name})
+                })
+                .catch(e => console.log(e));
+            },
+            editBranch(vuexContext, editedBranch) {
+                console.log("edited member id : " +editedBranch.id)
+                return this.$axios
+                .$put("https://anadolu-vakfi.firebaseio.com/branches/" +
+                editedBranch.id +
+                ".json?auth=" + vuexContext.state.token, editedBranch)
+                .then(res => {
+                    vuexContext.commit('editBranch', editedBranch)
+                })
+                .catch(e => console.log(e))
+            },
+            clearError ({commit}) {
+                commit('clearError')
             },
             authenticateUser(vuexContext, authData) {
                 vuexContext.commit('setLoading', true)

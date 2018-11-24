@@ -13,11 +13,11 @@
       :size="70"
       ></v-progress-circular>
     </v-container>
-    <v-template v-else>
+    <template v-else>
 
 
     <v-content >
-      <v-container fluid fill-height grid-list-xl  >
+      <v-container fluid grid-list-xl  >
 
           <router-view >
             <nuxt />
@@ -28,7 +28,7 @@
     <InsideHeader />
 
     <Footer/>
-    </v-template>
+    </template>
     </v-app>
    
 </template>
@@ -48,6 +48,7 @@ export default {
   },
   created(){
     this.$store.dispatch("loadMembers");
+    this.$store.dispatch("loadBranches");
   }
 }
 </script>

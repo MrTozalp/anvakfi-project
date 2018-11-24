@@ -14,3 +14,10 @@ const errorFilter = value => {
 
 
 Vue.filter('errorMessage', errorFilter)
+
+Vue.filter('column', function (column) {
+  if(column.filter === 'phone')
+    return column.value.replace(/^([0-9]{3})([0-9]{3})([0-9]{4})$/, '($1) $2-$3')
+  else
+    return column.value
+});
