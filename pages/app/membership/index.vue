@@ -29,6 +29,10 @@ export default {
 
         headers: [
           {
+            text: 'Şube',
+            value: 'branchName'
+          },
+          {
             text: 'Kimlik No',
             value: 'identityNumber'
           },
@@ -45,7 +49,7 @@ export default {
             value: 'phone',
             filter: 'phone'
           },
-                      {
+          {
             text: 'Meslek',
             value: 'jobTitle'
           }

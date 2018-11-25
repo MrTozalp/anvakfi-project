@@ -39,14 +39,28 @@
                         ></v-text-field>
                     </FormInput>
                     <FormInput>
-                        <v-text-field slot="form-text-field1"
+                        <v-select
+                            slot="form-text-field1"
+                            v-model="member.branch"
+                            :items="branchList"
+                            item-text="branchName"
+                            item-value="id"
+                            label="Şube"
+                            persistent-hint
+                            single-line
+                        ></v-select>
+                        <v-text-field slot="form-text-field2"
                             v-model="member.jobTitle"
                             label="Meslek" 
                         ></v-text-field>
+
+                    </FormInput>
+                    <FormInput>
                         <v-textarea slot="form-text-field2"
                             v-model="member.address"
                             label="Adres" 
                         ></v-textarea>
+
                     </FormInput>
                     <v-layout row>
                         <v-flex xs4>
@@ -107,7 +121,8 @@ export default {
                 identityNumber: "",
                 phone: "",
                 jobTitle: "",
-                address: ""
+                address: "",
+                branch: ""
             },
             rules: {
                 required: (value) => !!value || 'Zorunlu',
@@ -116,6 +131,12 @@ export default {
                 return pattern.test(value) || 'Geçersiz email';
                 }    
             }  
+        }
+    },
+    computed: {
+        branchList() {
+            return this.$store.getters.loadedBranches
+
         }
     },
     methods: {

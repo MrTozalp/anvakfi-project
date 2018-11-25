@@ -98,27 +98,35 @@ const createStore = () => {
                         context.error(e)
                     });
             },
-            addMember(vuexContext, member) {
+            addMember({commit,state}, member) {
+                const memberBranch = state.branches.find(element => element.id == member.branch);
                 const createdMember = {
                     ...member,
-                    updatedDate: new Date()
+                    branchName: memberBranch.branchName,
+                    createdDate: new Date()
                 }
                 return this.$axios
                 .$post(
-                    "https://anadolu-vakfi.firebaseio.com/members.json?auth=" +vuexContext.state.token, createdMember)
+                    "https://anadolu-vakfi.firebaseio.com/members.json?auth=" +state.token, createdMember)
                 .then(data => {
-                    vuexContext.commit('addMember', {...createdMember, id: data.name})
+                    commit('addMember', {...createdMember, id: data.name})
                 })
                 .catch(e => console.log(e));
             },
-            editMember(vuexContext, editedMember) {
-                console.log("edited member id : " +editedMember.id)
+            editMember({commit,state}, member) {
+                const memberBranch = state.branches.find(element => element.id == member.branch);
+
+                const editedMember = {
+                    ...member,
+                    branchName: memberBranch.branchName,
+                    updatedDate: new Date()
+                }
                 return this.$axios
                 .$put("https://anadolu-vakfi.firebaseio.com/members/" +
                 editedMember.id +
-                ".json?auth=" + vuexContext.state.token, editedMember)
+                ".json?auth=" + state.token, editedMember)
                 .then(res => {
-                    vuexContext.commit('editMember', editedMember)
+                    commit('editMember', editedMember)
                 })
                 .catch(e => console.log(e))
             },
