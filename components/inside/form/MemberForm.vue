@@ -39,16 +39,19 @@
                         ></v-text-field>
                     </FormInput>
                     <FormInput>
-                        <v-select
+
+
+                        <v-autocomplete
                             slot="form-text-field1"
                             v-model="member.branch"
                             :items="branchList"
                             item-text="branchName"
                             item-value="id"
                             label="Şube"
-                            persistent-hint
+                            :rules="[rules.required]"
                             single-line
-                        ></v-select>
+                        >
+                        </v-autocomplete>
                         <v-text-field slot="form-text-field2"
                             v-model="member.jobTitle"
                             label="Meslek" 

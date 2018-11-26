@@ -6,7 +6,7 @@
                 v-model="search"
                 slot="searchField"
                 prepend-inner-icon="search"
-                placeholder="Filtrele"
+                placeholder="Ara"
                 class="hidden-sm-and-down"
             ></v-text-field>
             <v-btn slot="exportAction" icon 
@@ -20,8 +20,6 @@
                     <v-list-tile-title @click="exportToWord">Adres Etiketi Al</v-list-tile-title>
                 </v-list-tile>
             </v-list>
-
-
         </TblToolbar>
 
         <v-data-table
@@ -47,6 +45,7 @@
 
 
             <template slot="items" slot-scope="props">
+                <tr>
                 <td>
                     <v-checkbox
                         primary
@@ -83,6 +82,7 @@
                             <v-icon>delete</v-icon>
                         </v-btn>
                     </dialog-button>
+                </tr>
         </template>
 
         </v-data-table>
@@ -164,6 +164,10 @@ export default {
             var wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, ws, 'search') 
             XLSX.writeFile(wb, 'üye listesi.xlsx')
+        },
+        showAlert(a){
+      
+            console.log('Alert! \n' + a.branchName);
         },
         exportToWord(){
             var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+

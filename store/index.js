@@ -7,8 +7,11 @@ const createStore = () => {
             members: [],
             groups: [],
             branches: [],
+            commons: [],
             loading: false,
+            busy: false,
             error: null,
+            success: false,
             token: null
         },
         getters: {
@@ -24,11 +27,20 @@ const createStore = () => {
             loadedBranches(state){
                 return state.branches;
             },
+            loadedCommons(state){
+                return state.commons;
+            },
             loading (state) {
                 return state.loading
             },
             error (state) {
                 return state.error
+            },
+            busy (state) {
+                return state.busy
+            },
+            success (state) {
+                return state.success
             }
         },
         mutations: {
@@ -62,14 +74,35 @@ const createStore = () => {
                 );
                 state.branches[branchIndex] = editedBranch
             },
+            setCommons(state, commons) {
+                state.commons = commons
+            },
+            addCommon(state, common) {
+                state.commons.push(common)
+            },
+            editCommon(state, editedCommon) {
+                const index = state.commons.findIndex(
+                  common => common.id === editedCommon.id
+                );
+                state.commons[index] = editedCommon
+            },
             setToken(state, token) {
                 state.token = token;
             },
             setLoading (state, payload) {
                 state.loading = payload
             },
+            setBusy(state, payload) {
+                state.busy = payload
+            },
             setError (state, payload) {
                 state.error = payload
+            },
+            setSuccess (state, payload) {
+                state.success = payload
+            },
+            clearSuccess (state) {
+                state.success = false
             },
             clearError (state) {
                 state.error = null
@@ -215,8 +248,43 @@ const createStore = () => {
                     vuexContext.commit('setError', error.response.data.error)
                   }
                 )
-              },
-              initAuth(vuexContext, req) {
+            },
+            loadCommons({commit}){
+                commit('setLoading', true)
+                return this.$axios
+                    .$get("/commons.json")
+                    .then(data => {
+                        const commonsArray = [];
+                        for(const key in data){
+                            commonsArray.push({ ...data[key], id: key });
+                        }
+                        commit("setCommons", commonsArray);
+                        commit('setLoading', false);
+                    })
+                    .catch(e => {
+                        commit('setLoading', false)
+                        commit('setError', e.response.data.error)
+                    });
+            },
+
+            addCommon({commit,state}, newCommon) {
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                return this.$axios
+                .$post(
+                    "https://anadolu-vakfi.firebaseio.com/commons.json?auth=" +state.token, newCommon)
+                .then(data => {
+                    commit('addCommon', {...newCommon, id: data.name})
+                    commit('setBusy', false);
+                    commit('setSuccess', true)
+                })
+                .catch(e => {
+                    commit('setBusy', false)
+                    commit('setError', e.response.data.error)
+                    commit('setSuccess', false)
+                });
+            },
+            initAuth(vuexContext, req) {
                 let token;
                 let expirationDate;
                 if (req) {

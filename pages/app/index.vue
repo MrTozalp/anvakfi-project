@@ -23,7 +23,7 @@ export default {
     middleware: ["check-auth", "auth"],
     components: {
       CircleStatistic
-  },
+    },
     data () {
       return {
         trending2: [

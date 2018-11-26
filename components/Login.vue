@@ -3,7 +3,7 @@
     <v-card>
     <v-layout row v-if="error">
       <v-flex>
-        <app-alert @dismissed="onDismissed" :text="error.message | errorMessage"></app-alert>
+        <app-alert @dismissed="onDismissed" type="error" :text="error.message | errorMessage"></app-alert>
       </v-flex>
     </v-layout>
       <v-card-text >
@@ -33,8 +33,8 @@
                 :disabled = "!isInstSelected "
                 :loading="loading">GİRİŞ YAP
                 <span slot="loader" class="custom-loader">
-                        <v-icon light>cached</v-icon>
-                       </span>
+                      <v-icon light>cached</v-icon>
+                  </span>
                 </v-btn>
     </v-card>
   </form>

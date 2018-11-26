@@ -18,6 +18,7 @@
 
     <v-content >
       <v-container fluid grid-list-xl  >
+        <breadcrumb></breadcrumb>
 
           <router-view >
             <nuxt />
@@ -49,6 +50,7 @@ export default {
   created(){
     this.$store.dispatch("loadMembers");
     this.$store.dispatch("loadBranches");
+    this.$store.dispatch("loadCommons");
   }
 }
 </script>

@@ -1,5 +1,0 @@
-<template>
-    <td>
-        
-    </td>
-</template>

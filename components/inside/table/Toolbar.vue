@@ -1,6 +1,7 @@
 <template>
     <v-toolbar card color="white">
-        <v-btn fab color="green" dark small nuxt :to="newRecord">
+        <v-btn fab color="green" dark small nuxt 
+            @click="newRecord">
             <v-icon dark>add</v-icon>
         </v-btn>
 
@@ -27,11 +28,20 @@
 </template>
 <script>
 export default {
-    computed: {
-        newRecord(){
-            return this.$route.path + "/new-record"
+    props: {
+        rowRecord: {
+            type: Boolean,
+            default: false
         }
     },
+    methods: {
+        newRecord(){
+            if(!this.rowRecord)
+                this.$router.push(this.$route.path + "/new-record") 
+            else
+                this.$emit('newRecord')
+        }
+    }
 }
 </script>
 

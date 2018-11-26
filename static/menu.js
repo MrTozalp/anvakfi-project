@@ -2,13 +2,13 @@ const Menu =  [
     { name: 'home' , icon: 'dashboard', text: 'Kontrol Paneli', to:'/app', },
     { divider: true },
     { heading: 'Üyelik Yönetimi' },
-    { name: 'membership', icon: 'face', text: 'Üyeler', to:'/app/membership'  },
-    { name: 'groups', icon: 'group_work', text: 'Gruplar', to:'/app/groups' },
-    { name: 'branches', icon: 'account_balance', text: 'Şubeler', to:'/app/branches' },
+    { name: 'app-membership', icon: 'face', text: 'Üyeler', to:'/app/membership'  },
+    { name: 'app-groups', icon: 'group_work', text: 'Gruplar', to:'/app/groups' },
+    { name: 'app-branches', icon: 'account_balance', text: 'Şubeler', to:'/app/branches' },
     { divider: true },
     { heading: 'Admin' },
-    { name: 'panel-users-profiles', icon: 'accessibility', text: 'Kullanıcılar', to:'/panel/users/profiles' },
-    { name: 'panel-users3', icon: 'label', text: 'Genel Bilgiler' , to:'/panel/users'},
+    { name: 'app-users', icon: 'accessibility', text: 'Kullanıcılar', to:'/app/users' },
+    { name: 'app-common', icon: 'label', text: 'Genel Bilgiler' , to:'/app/common'},
     { divider: true }
 ]
 
