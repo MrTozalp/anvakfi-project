@@ -18,7 +18,7 @@
 
     <v-content >
       <v-container fluid grid-list-xl  >
-        <breadcrumb></breadcrumb>
+        
 
           <router-view >
             <nuxt />

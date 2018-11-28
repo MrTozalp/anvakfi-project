@@ -21,6 +21,13 @@ const createStore = () => {
             loadedMembers(state) {
                 return state.members;
             },
+            fetchMember(state) {
+                return (id) => {
+                  return state.members.find((member) => {
+                    return member.id === id
+                  })
+                }
+            },
             loadedGroups(state){
                 return state.groups;
             },
@@ -29,6 +36,13 @@ const createStore = () => {
             },
             loadedCommons(state){
                 return state.commons;
+            },
+            fetchCommon (state) {
+                return (id) => {
+                  return state.commons.find((common) => {
+                    return common.id === id
+                  })
+                }
             },
             loading (state) {
                 return state.loading
@@ -62,6 +76,12 @@ const createStore = () => {
                 );
                 state.members.splice(memberIndex,1);
             },
+            deleteBranch(state, deletedBranch){
+                const index = state.branches.findIndex(
+                    branch => branch.id === deletedBranch.id
+                );
+                state.branches.splice(index,1);
+            },
             setBranches(state, branches) {
                 state.branches = branches
             },
@@ -73,6 +93,12 @@ const createStore = () => {
                   branch => branch.id === editedBranch.id
                 );
                 state.branches[branchIndex] = editedBranch
+            },
+            deleteCommon(state, deletedCommon) {
+                const index = state.commons.findIndex(
+                    common => common.id === deletedCommon.id
+                );
+                state.commons.splice(index,1);
             },
             setCommons(state, commons) {
                 state.commons = commons
@@ -86,6 +112,7 @@ const createStore = () => {
                 );
                 state.commons[index] = editedCommon
             },
+
             setToken(state, token) {
                 state.token = token;
             },
@@ -190,6 +217,16 @@ const createStore = () => {
                         context.error(e)
                     });
             },
+            deleteBranch(vuexContext, deletedBranch) {
+                return this.$axios
+                .$delete("https://anadolu-vakfi.firebaseio.com/branches/" +
+                deletedBranch.id +
+                ".json?auth="+ vuexContext.state.token, deletedBranch)
+                .then(res => {
+                    vuexContext.commit('deleteBranch', deletedBranch)
+                })
+                .catch(e => console.log(e))
+            },
             addBranch(vuexContext, branch) {
                 const createdBranch = {
                     ...branch,
@@ -214,8 +251,75 @@ const createStore = () => {
                 })
                 .catch(e => console.log(e))
             },
+
+            loadCommons({commit}){
+                commit('setLoading', true)
+                return this.$axios
+                    .$get("/commons.json")
+                    .then(data => {
+                        const commonsArray = [];
+                        for(const key in data){
+                            commonsArray.push({ ...data[key], id: key });
+                        }
+                        commit("setCommons", commonsArray);
+                        commit('setLoading', false);
+                    })
+                    .catch(e => {
+                        commit('setLoading', false)
+                        commit('setError', e.response.data.error)
+                    });
+            },
+            deleteCommon(vuexContext, deletedCommon) {
+                return this.$axios
+                .$delete("https://anadolu-vakfi.firebaseio.com/commons/" +
+                deletedCommon.id +
+                ".json?auth="+ vuexContext.state.token, deletedCommon)
+                .then(res => {
+                    vuexContext.commit('deleteCommon', deletedCommon)
+                })
+                .catch(e => console.log(e))
+            },
+            addCommon({commit,state}, newCommon) {
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                return this.$axios
+                .$post(
+                    "https://anadolu-vakfi.firebaseio.com/commons.json?auth=" +state.token, newCommon)
+                .then(data => {
+                    commit('addCommon', {...newCommon, id: data.name})
+                    commit('setBusy', false);
+                    commit('setSuccess', true)
+                })
+                .catch(e => {
+                    commit('setBusy', false)
+                    commit('setError', e.response.data.error)
+                    commit('setSuccess', false)
+                });
+            },
+            editCommon({commit, state}, editedCommon) {
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                console.log("edited common id : " +editedCommon.id)
+                return this.$axios
+                .$put("https://anadolu-vakfi.firebaseio.com/commons/" +
+                editedCommon.id +
+                ".json?auth=" + state.token, editedCommon)
+                .then(res => {
+                    commit('editCommon', editedCommon)
+                    commit('setBusy', false);
+                    commit('setSuccess', true)
+                })
+                .catch(e => {                    
+                    commit('setBusy', false)
+                    commit('setError', e.response.data.error)
+                    commit('setSuccess', false)
+                })
+            },
             clearError ({commit}) {
                 commit('clearError')
+            },
+            clearSuccess ({commit}) {
+                commit('clearSuccess')
             },
             authenticateUser(vuexContext, authData) {
                 vuexContext.commit('setLoading', true)
@@ -248,41 +352,6 @@ const createStore = () => {
                     vuexContext.commit('setError', error.response.data.error)
                   }
                 )
-            },
-            loadCommons({commit}){
-                commit('setLoading', true)
-                return this.$axios
-                    .$get("/commons.json")
-                    .then(data => {
-                        const commonsArray = [];
-                        for(const key in data){
-                            commonsArray.push({ ...data[key], id: key });
-                        }
-                        commit("setCommons", commonsArray);
-                        commit('setLoading', false);
-                    })
-                    .catch(e => {
-                        commit('setLoading', false)
-                        commit('setError', e.response.data.error)
-                    });
-            },
-
-            addCommon({commit,state}, newCommon) {
-                commit('setSuccess', false)
-                commit('setBusy', true)
-                return this.$axios
-                .$post(
-                    "https://anadolu-vakfi.firebaseio.com/commons.json?auth=" +state.token, newCommon)
-                .then(data => {
-                    commit('addCommon', {...newCommon, id: data.name})
-                    commit('setBusy', false);
-                    commit('setSuccess', true)
-                })
-                .catch(e => {
-                    commit('setBusy', false)
-                    commit('setError', e.response.data.error)
-                    commit('setSuccess', false)
-                });
             },
             initAuth(vuexContext, req) {
                 let token;

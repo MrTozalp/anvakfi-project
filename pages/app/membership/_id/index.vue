@@ -10,19 +10,10 @@ export default {
     components: {
         MemberForm
     },
-    asyncData(context) {
-        return context.app.$axios
-        .$get(
-            "/members/" +
-            context.params.id +
-            ".json"
-        )
-        .then(data => {
-            return {
-                loadedMember: {...data, id: context.params.id}
-            };
-        })
-        .catch(e => context.error());
+    computed: {
+        loadedMember () {
+            return this.$store.getters.fetchMember(this.$route.params.id)
+        }
     },
     methods: {
         onSubmitted(loadedMember) {

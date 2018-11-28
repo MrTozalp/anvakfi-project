@@ -4,6 +4,7 @@
           <v-card > 
             <v-divider></v-divider>
             <Table 
+              @delete="onDeleted" 
               :tableConfig="tableConfig" 
               :toolbarConfig="toolbarConfig"
               :records="loadedMembers"
@@ -67,6 +68,12 @@ export default {
     loadedMembers() {
       return this.$store.getters.loadedMembers
     }
-  }
+  },
+  methods: {
+      onDeleted(commonRecord) {
+          console.log(commonRecord)
+          this.$store.dispatch("deleteCommon", commonRecord)
+      }
+  },
 };
 </script>

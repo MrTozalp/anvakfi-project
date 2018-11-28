@@ -1,5 +1,7 @@
 <template>
-    <branch-form :loadedBranch="loadedBranch" @submit="onSubmitted"/>
+    <branch-form 
+        :loadedBranch="loadedBranch" 
+        @submit="onSubmitted"/>
 </template>
             
 

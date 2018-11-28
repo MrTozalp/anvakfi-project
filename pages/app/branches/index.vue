@@ -3,7 +3,8 @@
         <v-flex lg12>
           <v-card > 
             <v-divider></v-divider>
-            <Table 
+            <Table
+            @delete="onDeleted"   
             :tableConfig="tableConfig" 
             :toolbarConfig="toolbarConfig"
             :records="loadedBranches"/>
@@ -45,6 +46,7 @@ export default {
             text: 'Faks',
             value: 'branchFax',
             filter: 'phone'
+            
           }
         ],
         rows_per_page_items: [10,25,50,{text:'All','value':-1}] ,
@@ -60,7 +62,13 @@ export default {
     loadedBranches() {
       return this.$store.getters.loadedBranches
     }
-  }
+  },
+  methods: {
+      onDeleted(branchItem) {
+          console.log(branchItem)
+          this.$store.dispatch("deleteBranch", branchItem)
+      }
+  },
 }
 
 </script>

@@ -135,8 +135,10 @@ export default {
             this.$router.push(currentPath+'/'+uuid)
         },
         deleteRecord(item){
-            this.$store.dispatch("deleteMember", item)
+            this.$emit('delete', item)
+            
         },
+
         exportToExcel(){
             var memberToExport = this.$store.getters.loadedMembers
             memberToExport.forEach(function(v){ 

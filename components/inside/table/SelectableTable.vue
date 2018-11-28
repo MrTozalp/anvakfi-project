@@ -15,13 +15,13 @@
 
         <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
 
-        <v-layout row v-if="success">
+        <v-layout row v-if="isSuccessMessage">
             <v-flex>
-                <app-alert @dismissed="onDismissed" type="success" text="Kayıt eklenmiştir!"></app-alert>
+                <app-alert @dismissed="onDismissed" type="success" text="Kayıt başarılı şekilde işlenmiştir!"></app-alert>
             </v-flex>
         </v-layout>
         <v-text-field
-            v-model="newRecord.name"
+            v-model="record"
             v-if="isNewRecord"
             placeholder="Yeni Kayıt"
             single-line
@@ -44,7 +44,7 @@
 
   <v-data-table
     :items="records"
-    class="elevation-1"
+    
     hide-headers
     :search="search"
     item-key="name"
@@ -58,8 +58,28 @@
         "{{ search }}" aramasına göre sonuç bulunmamaktadır :(
     </v-alert>
     <template slot="items" slot-scope="props">
-        <tr @click="onSelectedRow(props.item)">
+        <tr @click="selectRow(props.item)">
             <td>{{ props.item.name }}</td>
+
+                <v-btn depressed outline icon fab dark 
+                    color="primary" small
+                    @click="editRecord(props.item.id)"
+                    >
+                    <v-icon nuxt >edit</v-icon>
+                </v-btn>
+                <dialog-button 
+                    headline="Kayıt Silme" 
+                    content="Kaydı silmek istiyor musunuz?"
+                    actionBtnTitle="SİL"
+                    defaultBtnTitle="İPTAL"
+                    @click="deleteRecord(props.item)"
+                    >
+                    <v-btn slot="actionActivator"                    
+                        depressed outline icon fab dark small color="red"
+                        >
+                        <v-icon>delete</v-icon>
+                    </v-btn>
+                </dialog-button>
         </tr>
     </template>
   </v-data-table>
@@ -67,20 +87,27 @@
 </template>
 
 <script>
+
 import { mapGetters } from 'vuex'
 import TblToolbar from '@/components/inside/table/Toolbar'
+import DialogButton from '@/components/inside/Dialog'
 export default {
     components: {
-        TblToolbar
+        
+        TblToolbar,
+        DialogButton
     },
     data () {
         return {
             valid: true,
             isNewRecord : false,
-            newRecord : {
+            record: "",
+            selectedItem: {},
+            isSuccessMessage : false,
+            search : '',
+            editedRecord: {
                 name: ""
             },
-            search : '',
             rules: {
                 required: (value) => !!value || 'Zorunlu'
             } 
@@ -90,33 +117,72 @@ export default {
         records: {
             type: Array,
             required: true
+        },
+        header: {
+            type: String,
+            required: false
         }
     },
     computed: {
         ...mapGetters([ 'busy', 'error', 'success'])
     },
     methods: {
-        onSelectedRow(item){
-            console.log('Selected - ' + item.name);
+        selectRow(item){
+            this.selectedItem = item
+            this.$emit('select', item)
+
         },
         onSave() {
              if (this.$refs.form.validate()){
-                this.$emit('submit', this.newRecord)
+                 
+                 console.log("edited record: " + this.editedRecord )
+                 if(this.editedRecord.name ){
+                    console.log(this.editedRecord)
+                    this.editedRecord.name = this.record
+                    this.$emit('edit', this.editedRecord)
+
+
+                 }else{
+                     console.log("new record!!!")
+                     this.$emit('newRecord', {
+                            name: this.record
+                         })
+                 }
+                    
+                
              }
+        },
+        editRecord(recordId) {
+            this.editedRecord = this.$store.getters.fetchCommon(recordId)
+            this.record = this.editedRecord.name
+            this.isNewRecord = true
+
         },
         clearRecord() {
             this.isNewRecord = false
-            this.newRecord = ''
+            this.record = ''
+        
             
         },
         onDismissed () {
             this.$store.dispatch('clearSuccess')
-        }
+        },
+        deleteRecord(record){
+            this.$emit('delete', record)
+            
+        },
     },
     watch: {
       success(val){
-          if(val === true) this.clearRecord()
+          if(val === true && this.isNewRecord){
+                this.isSuccessMessage = true
+                if(this.editedRecord)
+                    this.$emit('select', this.editedRecord)
+                this.editedRecord  = ''
+                this.clearRecord()
+          }
       }
+
     }
 }
 </script>
