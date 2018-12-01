@@ -1,6 +1,6 @@
 <template>
 <div>
-        <TblToolbar :rowRecord="true" @newRecord="isNewRecord = true">
+        <TblToolbar :rowRecord="true" @newRecord="newRecord">
             <v-text-field
                 flat solo hide-details
                 v-model="search"
@@ -17,7 +17,7 @@
 
         <v-layout row v-if="isSuccessMessage">
             <v-flex>
-                <app-alert @dismissed="onDismissed" type="success" text="Kayıt başarılı şekilde işlenmiştir!"></app-alert>
+                <app-alert @dismissed="dismissMessage" type="success" text="Kayıt başarılı şekilde işlenmiştir!"></app-alert>
             </v-flex>
         </v-layout>
         <v-text-field
@@ -45,6 +45,7 @@
   <v-data-table
     :items="records"
     hide-headers
+    :rows-per-page-items="[10,25,50,{text:'All','value':-1}]"
     :search="search"
     item-key="name"
 >
@@ -101,11 +102,10 @@ export default {
             valid: true,
             isNewRecord : false,
             record: "",
-            selectedItem: {},
             isSuccessMessage : false,
             search : '',
             editedRecord: {
-                name: ""
+                name: ''
             },
             rules: {
                 required: (value) => !!value || 'Zorunlu'
@@ -138,10 +138,10 @@ export default {
         },
         onSave() {
              if (this.$refs.form.validate()){
-                 
-                 console.log("edited record: " + this.editedRecord )
-                 if(this.editedRecord){
-                    this.$emit('edit',  { newRecord: {...this.editedRecord , name: this.record}, oldRecord: this.editedRecord  })   
+                 if(this.editedRecord.name){
+                     console.log("edited record: " + this.editedRecord )
+                    this.$emit('edit',  { newRecord: {...this.editedRecord , name: this.record}, oldRecord: this.editedRecord  })  
+                    this.editedRecord = ''
 
                  }else{
                      console.log("new record!!!")
@@ -153,7 +153,12 @@ export default {
                 
              }
         },
+        newRecord(){
+            this.isNewRecord = true
+            this.dismissMessage()
+        },
         editRecord(selectedItem) {
+            this.dismissMessage()
             if(this.isParent){
                 this.editedRecord = this.$store.getters.fetchCommon(selectedItem.id)
                 this.record = this.editedRecord.name
@@ -175,7 +180,8 @@ export default {
         
             
         },
-        onDismissed () {
+        dismissMessage() {
+            this.isSuccessMessage = false
             this.$store.dispatch('clearSuccess')
         },
         deleteRecord(record){
