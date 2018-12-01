@@ -6,8 +6,8 @@
             <v-widget title="Genel Bilgiler" >
             <selectable-table
                 slot="widget-content"
+                isParent
                 :records="loadedCommons"
-                @select="onSelectedParent"
                 @edit="onEditedParent"
                 @delete="onDeletedParent"  
                 @newRecord="onNewRecordParent"/>
@@ -18,10 +18,21 @@
         <v-flex lg6>
           <v-card > 
             <v-divider></v-divider>
-            <v-widget :title="commonTitle" >
-                <selectable-table
+            <v-widget :title="selectedCommon.name" >
+                <v-alert
+                    :value="!selectedCommon"
+                    type="info"
                     slot="widget-content"
-                    :records="commonItems"
+                    >
+                    Genel Bilgiler tablosundan seçim yapınız.
+                </v-alert>
+                <selectable-table
+                    v-if="selectedCommon"
+                    slot="widget-content"
+                    :records="selectedCommonItems"
+                    @edit="onEditedChild"
+                    @delete="onDeletedChild"  
+                    @newRecord="onNewRecordChild"
                 />
             </v-widget>
           </v-card>
@@ -37,49 +48,78 @@ import SelectableTable from '@/components/inside/table/SelectableTable'
 export default {
     layout: 'inside',
     middleware: ["check-auth", "auth"],
-    data() {
-        return {
-            selected: [],
-            commonItems: [],
-            commonTitle: ""
-        }
-    },
     components: {
         VWidget,
         SelectableTable
     },
     methods: {
-        onSelectedParent(selectedItem){
-            if(selectedItem) this.selected = []
-            this.selected.push(selectedItem)
-            console.log(this.selected)
-            this.commonItems = [{
-                name: "Deneme"
-            }];
-        },
         onNewRecordParent(commonRecord) {
             console.log(commonRecord)
             this.$store.dispatch("addCommon", commonRecord)
         },
-        onEditedParent(commonRecord) {
-            console.log(commonRecord)
-            this.$store.dispatch("editCommon", commonRecord)
+        onEditedParent(record) {
+            console.log(record.newRecord)
+            this.$store.dispatch("editCommon", record.newRecord)
         },
         onDeletedParent(commonRecord) {
             console.log(commonRecord)
             this.$store.dispatch("deleteCommon", commonRecord)
+        },
+        onNewRecordChild(record) {
+            let commonItems = []
+            for (var i in this.selectedCommon.items) {
+                commonItems.push(this.selectedCommon.items[i])
+            }
+            commonItems.push(record)
+            let editedCommon = {
+                id: this.selectedCommon.id,
+                name: this.selectedCommon.name,
+                items: commonItems
+            }
+            this.$store.dispatch("editCommon", editedCommon)
+            
+        },
+        onEditedChild(record) {
+            let commonItems = []
+            for (var i in this.selectedCommon.items) {
+                
+                if(this.selectedCommon.items[i] === record.oldRecord)
+                    commonItems.push(record.newRecord)
+                else
+                    commonItems.push(this.selectedCommon.items[i])
+                
+            }
+            let editedCommon = {
+                id: this.selectedCommon.id,
+                name: this.selectedCommon.name,
+                items: commonItems
+            }
+            this.$store.dispatch("editCommon", editedCommon)
+        },
+        onDeletedChild(record) {
+            let commonItems = []
+            for (var i in this.selectedCommon.items) {
+                if(this.selectedCommon.items[i] != record)
+                    commonItems.push(this.selectedCommon.items[i])
+            }
+            let editedCommon = {
+                id: this.selectedCommon.id,
+                name: this.selectedCommon.name,
+                items: commonItems
+            }
+            this.$store.dispatch("editCommon", editedCommon)
         }
     },
     computed: {
         loadedCommons() {
             return this.$store.getters.loadedCommons
-        }
-
-    },
-    watch: {
-        selected(val) {
-            if(val && val[0])
-                this.commonTitle = val[0].name
+        },
+        selectedCommon() {
+            return this.$store.getters.selectedCommon
+        },
+        selectedCommonItems(){
+            const commonItems =  this.$store.getters.selectedCommon.items
+            return commonItems
         }
     }
 }

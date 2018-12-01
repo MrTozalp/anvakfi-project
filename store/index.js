@@ -9,12 +9,19 @@ const createStore = () => {
             branches: [],
             commons: [],
             loading: false,
+            selectedCommon: null,
             busy: false,
             error: null,
             success: false,
             token: null
         },
         getters: {
+
+            selectedCommon(state){
+                if(!state.selectedCommon)
+                    state.selectedCommon = state.commons[0]
+                return state.selectedCommon
+            },
             isAuthenticated(state){
                 return state.token != null;
             },
@@ -44,6 +51,13 @@ const createStore = () => {
                   })
                 }
             },
+            fetchCommonItem(state) {
+                return(item) => {
+                    return state.selectedCommon.items.find((commonItem) => {
+                        return commonItem === item
+                    })
+                }
+            },
             loading (state) {
                 return state.loading
             },
@@ -58,6 +72,9 @@ const createStore = () => {
             }
         },
         mutations: {
+            setSelectedCommon(state, common){
+                state.selectedCommon = common
+            },
             setMembers(state, members) {
                 state.members = members
             },
@@ -107,10 +124,10 @@ const createStore = () => {
                 state.commons.push(common)
             },
             editCommon(state, editedCommon) {
-                const index = state.commons.findIndex(
-                  common => common.id === editedCommon.id
+                let itemToUpdate = state.commons.find(
+                  common => common.id == editedCommon.id
                 );
-                state.commons[index] = editedCommon
+                Object.assign(itemToUpdate,editedCommon)
             },
 
             setToken(state, token) {
@@ -286,7 +303,7 @@ const createStore = () => {
                 .$post(
                     "https://anadolu-vakfi.firebaseio.com/commons.json?auth=" +state.token, newCommon)
                 .then(data => {
-                    commit('addCommon', {...newCommon, id: data.name})
+                    commit('addCommon', {...newCommon, id: data.name, items: []})
                     commit('setBusy', false);
                     commit('setSuccess', true)
                 })
@@ -306,6 +323,7 @@ const createStore = () => {
                 ".json?auth=" + state.token, editedCommon)
                 .then(res => {
                     commit('editCommon', editedCommon)
+                    commit('setSelectedCommon',editedCommon)
                     commit('setBusy', false);
                     commit('setSuccess', true)
                 })

@@ -44,7 +44,6 @@
 
   <v-data-table
     :items="records"
-    
     hide-headers
     :search="search"
     item-key="name"
@@ -63,7 +62,7 @@
 
                 <v-btn depressed outline icon fab dark 
                     color="primary" small
-                    @click="editRecord(props.item.id)"
+                    @click="editRecord(props.item)"
                     >
                     <v-icon nuxt >edit</v-icon>
                 </v-btn>
@@ -121,6 +120,11 @@ export default {
         header: {
             type: String,
             required: false
+        },
+        isParent: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     },
     computed: {
@@ -128,19 +132,16 @@ export default {
     },
     methods: {
         selectRow(item){
-            this.selectedItem = item
-            this.$emit('select', item)
+            if(this.isParent)
+                this.$store.commit('setSelectedCommon',item)
 
         },
         onSave() {
              if (this.$refs.form.validate()){
                  
                  console.log("edited record: " + this.editedRecord )
-                 if(this.editedRecord.name ){
-                    console.log(this.editedRecord)
-                    this.editedRecord.name = this.record
-                    this.$emit('edit', this.editedRecord)
-
+                 if(this.editedRecord){
+                    this.$emit('edit',  { newRecord: {...this.editedRecord , name: this.record}, oldRecord: this.editedRecord  })   
 
                  }else{
                      console.log("new record!!!")
@@ -152,10 +153,20 @@ export default {
                 
              }
         },
-        editRecord(recordId) {
-            this.editedRecord = this.$store.getters.fetchCommon(recordId)
-            this.record = this.editedRecord.name
-            this.isNewRecord = true
+        editRecord(selectedItem) {
+            if(this.isParent){
+                this.editedRecord = this.$store.getters.fetchCommon(selectedItem.id)
+                this.record = this.editedRecord.name
+                this.isNewRecord = true
+            }
+            else{
+                this.editedRecord = this.$store.getters.fetchCommonItem(selectedItem)
+                
+                this.record = this.editedRecord.name
+                console.log("child edit : "+this.editedRecord.name)
+                this.isNewRecord = true
+            }
+
 
         },
         clearRecord() {
