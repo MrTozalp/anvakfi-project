@@ -2,42 +2,56 @@
 
   <div id="page-text-fields">
     
-      <v-layout row wrap>
-        <v-flex lg12>
-          <v-widget :title="formTitle" backTo="/app/branches" >
+      <v-layout>
+        <v-flex lg12 sm6>
+          <v-widget :title="branch ? 'Yeni Şube'  : 'Şube Güncelle'" backTo="/app/branches" >
             <div slot="widget-content">
-                <v-container>
+                
                     <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
-                    <FormInput                                        
+                    <v-container>
+                    <v-layout row wrap>
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="branch.branchName"
+                                label="Şube Adı"
+                                :rules="[rules.required]"
+                            ></v-text-field>
+                        </FormInput>
+                        <FormInput v-for="(item,index) in commonItemList" :key="index">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="branch.commons[index]"
+                                :items="item.items"
+                                item-text="name"
+                                item-value="name"
+                                :label="item.name"
+                                :rules="[rules.required]"
+                                single-line
                             >
-                        <v-text-field slot="form-text-field1"
-                            v-model="branch.branchName"
-                            label="Şube Adı"
-                            :rules="[rules.required]"
-                        ></v-text-field>
-                        <v-text-field slot="form-text-field2"
-                            v-model="branch.branchPhone"
-                             label="Telefon"
-                            mask="(###) ### - ####"
-                            :rules="[rules.required]"
-                        ></v-text-field>
-                    </FormInput>
+                            </v-autocomplete>
+                        </FormInput>
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="branch.branchPhone"
+                                label="Telefon"
+                                mask="(###) ### - ####"
+                                :rules="[rules.required]"
+                            ></v-text-field>
+                        </FormInput>
+                        <FormInput>
+                                <v-text-field slot="form-field"
+                                v-model="branch.branchFax"
+                                label="Faks"
+                                mask="(###) ### - ####"
+                            ></v-text-field>
+                        </FormInput>
 
-                    <FormInput>
-                             <v-text-field slot="form-text-field1"
-                            v-model="branch.branchFax"
-                             label="Faks"
-                            mask="(###) ### - ####"
-                        ></v-text-field>
-                        <v-textarea slot="form-text-field2"
-                            v-model="branch.branchAddress"
-                            label="Adres" 
-                        ></v-textarea>
-                    </FormInput>
-                    <v-layout row>
-                        <v-flex xs4>
-                        </v-flex>
-                        <v-flex xs8>
+                        <FormInput>
+                            <v-textarea slot="form-field"
+                                v-model="branch.branchAddress"
+                                label="Adres" 
+                            ></v-textarea>
+                        </FormInput>
                             <form-button 
                                type="submit"
                                 color="primary">
@@ -48,10 +62,9 @@
                                 color="error">
                                 İptal
                             </form-button>
-                        </v-flex>
-                    </v-layout>
+                        </v-layout>
+                    </v-container>
                     </v-form>
-                </v-container>
             </div>
           </v-widget>
         </v-flex>
@@ -78,20 +91,27 @@ export default {
         }
     },
     computed: {
-        formTitle() {
-            return this.loadedBranch==null ? 'Yeni Üye' : 'Üye Güncelle'
+        commonItemList(){
+            let itemList = []
+            const branchCommons = this.$store.getters.moduleCommonsByModuleName("branch")
+            branchCommons.forEach(item => {
+                itemList.push( item.commonItem)
+            })
+            return itemList
         }
+
     },
     data () {
         return {
             valid: true,
-            branch:  this.loadedBranch
+            branch: this.loadedBranch
             ? { ...this.loadedBranch }
             : {
                 branchName: "",
                 branchAddress: "",
                 branchPhone: "",
-                branchFax: ""
+                branchFax: "",
+                commons : []
             },
             rules: {
                 required: (value) => !!value || 'Zorunlu'    

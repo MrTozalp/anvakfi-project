@@ -49,18 +49,14 @@ export default {
             text: 'Telefon',
             value: 'phone',
             filter: 'phone'
-          },
-          {
-            text: 'Meslek',
-            value: 'jobTitle'
           }
         ],
         rows_per_page_items: [10,25,50,{text:'All','value':-1}] ,
 
       },
       toolbarConfig: {
-          moreAction: true,
-          exportAction: true
+          exportAction: true,
+          moreAction: true
       }
     }
   },
@@ -70,9 +66,9 @@ export default {
     }
   },
   methods: {
-      onDeleted(commonRecord) {
-          console.log(commonRecord)
-          this.$store.dispatch("deleteCommon", commonRecord)
+      onDeleted(memberToDelete) {
+          console.log(memberToDelete)
+          this.$store.dispatch("deleteMember", memberToDelete)
       }
   },
 };

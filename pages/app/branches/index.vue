@@ -53,7 +53,6 @@ export default {
 
       },
       toolbarConfig: {
-          moreAction: false,
           exportAction: true
       }
     }

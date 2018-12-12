@@ -51,6 +51,7 @@ export default {
     this.$store.dispatch("loadMembers");
     this.$store.dispatch("loadBranches");
     this.$store.dispatch("loadCommons");
+    this.$store.dispatch("loadModuleCommons");
   }
 }
 </script>

@@ -7,6 +7,7 @@
             <selectable-table
                 slot="widget-content"
                 isParent
+                plugAction
                 :records="loadedCommons"
                 @edit="onEditedParent"
                 @delete="onDeletedParent"  
@@ -18,7 +19,7 @@
         <v-flex lg6>
           <v-card > 
             <v-divider></v-divider>
-            <v-widget :title="selectedCommon.name" >
+            <v-widget :title="selectedCommon ? selectedCommon.name : ''" >
                 <v-alert
                     :value="!selectedCommon"
                     type="info"
@@ -111,6 +112,7 @@ export default {
         }
     },
     computed: {
+
         loadedCommons() {
             return this.$store.getters.loadedCommons
         },
@@ -118,7 +120,9 @@ export default {
             return this.$store.getters.selectedCommon
         },
         selectedCommonItems(){
-            const commonItems =  this.$store.getters.selectedCommon.items
+            let commonItems =  []
+            if(this.selectedCommon)
+                Object.assign(commonItems,this.$store.getters.selectedCommon.items)
             return commonItems
         }
     }

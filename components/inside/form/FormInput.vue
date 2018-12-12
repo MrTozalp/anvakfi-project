@@ -1,13 +1,18 @@
 <template>
-    <v-layout row>
-        <v-flex xs6 class="px-5">
-            <slot name="form-text-field1"></slot>
+    
+        <v-flex lg6 class="px-5">
+            <slot name="form-field"></slot>
         </v-flex>
-        <v-flex xs6 class="px-5">
-            <slot name="form-text-field2"></slot>
-        </v-flex>
-    </v-layout>
+    
 </template>
 
 <script>
+export default {
+    props:{
+        commonItem: {
+            type: String
+        }
+    },
+}
+
 </script>

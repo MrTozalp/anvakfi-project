@@ -43,12 +43,13 @@
         </v-form>
 
   <v-data-table
+    :headers="[{text: 'Tanım', value: 'name'}]"
     :items="records"
     hide-headers
     :rows-per-page-items="[10,25,50,{text:'All','value':-1}]"
     :search="search"
-    item-key="name"
->
+    item-key="id"
+>   
     <template slot="no-data">
         <v-alert :value="true" color="error" icon="warning">
             Üzgünüm, listede kayıt bulunmamaktadır :(
@@ -60,6 +61,38 @@
     <template slot="items" slot-scope="props">
         <tr @click="selectRow(props.item)">
             <td>{{ props.item.name }}</td>
+
+                <dialog-button
+                        v-if="plugAction" 
+                        headline="Genel Bilgi/Modül Ayarı" 
+                        content="Genel Bilgiyi bağlamak istediğiniz modülleri seçiniz."
+                        actionBtnTitle="Onayla"
+                        defaultBtnTitle="İptal"
+                        @click="saveConnection"
+                    >
+                    <v-autocomplete
+                        slot="form"
+                        :items="modules"
+                        item-text="text"
+                        item-value="value"
+                        v-model="modulesForSelect"
+                        deletable-chips
+                        hide-selected
+                        label="Modüller"
+                        multiple
+                        small-chips
+                        persistent-hint
+                        return-object
+                    ></v-autocomplete>
+
+                    <v-btn
+                        @click="onConnectionModule(props.item)"  
+                        slot="actionActivator"
+                        depressed outline icon fab dark 
+                        color="primary" small>
+                        <v-icon nuxt >donut_large</v-icon>
+                    </v-btn>
+                </dialog-button>
 
                 <v-btn depressed outline icon fab dark 
                     color="primary" small
@@ -80,6 +113,8 @@
                         <v-icon>delete</v-icon>
                     </v-btn>
                 </dialog-button>
+
+
         </tr>
     </template>
   </v-data-table>
@@ -93,7 +128,6 @@ import TblToolbar from '@/components/inside/table/Toolbar'
 import DialogButton from '@/components/inside/Dialog'
 export default {
     components: {
-        
         TblToolbar,
         DialogButton
     },
@@ -103,6 +137,7 @@ export default {
             isNewRecord : false,
             record: "",
             isSuccessMessage : false,
+            modulesForSelect : [],
             search : '',
             editedRecord: {
                 name: ''
@@ -123,17 +158,28 @@ export default {
         },
         isParent: {
             type: Boolean,
-            default: false,
-            required: false
+        },
+        plugAction: {
+            type: Boolean,
         }
     },
     computed: {
-        ...mapGetters([ 'busy', 'error', 'success'])
+        ...mapGetters([ 'busy', 'error', 'success','selectedCommon','modules','modulesBySelectedCommon']),
+
     },
     methods: {
+        onConnectionModule(item){
+            
+            this.$store.commit('setSelectedCommon',item)
+            this.modulesForSelect = [...this.modulesBySelectedCommon]
+            
+
+        },
         selectRow(item){
-            if(this.isParent)
+            if(this.isParent){
                 this.$store.commit('setSelectedCommon',item)
+
+            }
 
         },
         onSave() {
@@ -177,6 +223,7 @@ export default {
         clearRecord() {
             this.isNewRecord = false
             this.record = ''
+            this.editedRecord  = ''
         
             
         },
@@ -184,21 +231,26 @@ export default {
             this.isSuccessMessage = false
             this.$store.dispatch('clearSuccess')
         },
+        saveConnection(){
+            console.log(this.modulesForSelect)
+            this.$store.dispatch('addModuleCommons', this.modulesForSelect)
+
+        },
         deleteRecord(record){
             this.$emit('delete', record)
-            
+            this.dismissMessage()
         },
     },
     watch: {
-      success(val){
-          if(val === true && this.isNewRecord){
-                this.isSuccessMessage = true
-                if(this.editedRecord)
-                    this.$emit('select', this.editedRecord)
-                this.editedRecord  = ''
-                this.clearRecord()
-          }
-      }
+        success(val){
+            if(val === true && this.isNewRecord){
+                    this.isSuccessMessage = true
+                    if(this.editedRecord)
+                        this.$emit('select', this.editedRecord)
+                    
+                    this.clearRecord()
+            }
+        }
 
     }
 }

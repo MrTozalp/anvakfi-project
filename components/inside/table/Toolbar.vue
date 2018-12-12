@@ -7,14 +7,10 @@
 
         <slot name="searchField"></slot>
 
-        <v-btn icon>
-            <v-icon>filter_list</v-icon>
-        </v-btn>
 
-
-        <slot name="exportAction"></slot>
+        <slot name="toolbarAction"></slot>
         
-        <v-menu  bottom left>
+        <v-menu  bottom left v-if="moreAction">
             <v-btn  icon slot="activator">
                 <v-icon>more_vert</v-icon>
             </v-btn> 
@@ -30,8 +26,10 @@
 export default {
     props: {
         rowRecord: {
-            type: Boolean,
-            default: false
+            type: Boolean
+        },
+        moreAction:{
+            type: Boolean
         }
     },
     methods: {

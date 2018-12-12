@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TblToolbar >
+        <TblToolbar :moreAction="toolbarConfig.moreAction">
             <v-text-field
                 flat solo hide-details
                 v-model="search"
@@ -8,13 +8,18 @@
                 prepend-inner-icon="search"
                 placeholder="Ara"
                 class="hidden-sm-and-down"
+                
             ></v-text-field>
-            <v-btn slot="exportAction" icon 
+
+            <v-btn slot="toolbarAction" icon>
+                <v-icon>filter_list</v-icon>
+            </v-btn>
+            <v-btn slot="toolbarAction" icon 
                 @click="exportToExcel" 
-                v-show="toolbarConfig.exportAction">
+                >
                 <v-icon>get_app</v-icon>
             </v-btn> 
-            <v-list slot="moreAction" v-show="toolbarConfig.moreAction">
+            <v-list slot="moreAction">
                 <v-list-tile >
                     <v-icon>get_app</v-icon>
                     <v-list-tile-title @click="exportToWord">Adres Etiketi Al</v-list-tile-title>
@@ -43,9 +48,9 @@
                  "{{ search }}" aramasına göre sonuç bulunmamaktadır :(
             </v-alert>
 
-
             <template slot="items" slot-scope="props">
-                <tr>
+            <tr>
+                
                 <td>
                     <v-checkbox
                         primary
@@ -54,7 +59,7 @@
                     ></v-checkbox>
                 </td>
 
-                <td v-for="(header,index) in tableConfig.headers" :key="index">
+                <td  @click="props.expanded = !props.expanded" v-for="(header,index) in tableConfig.headers" :key="index">
                     {{ 
                         { 
                             value: props.item[header.value],
@@ -82,8 +87,17 @@
                             <v-icon>delete</v-icon>
                         </v-btn>
                     </dialog-button>
-                </tr>
+                
+            </tr>
         </template>
+        
+        <template slot="expand" slot-scope="props">
+            <v-card flat>
+                <v-card-text>Peek-a-boo!</v-card-text>
+            </v-card>
+        </template>
+        
+
 
         </v-data-table>
     </div>
@@ -121,7 +135,15 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([ 'error'])
+
+        commonNames(){
+            let itemList = []
+            const memberCommons = this.$store.getters.moduleCommonsByModuleName("member")
+            memberCommons.forEach(item => {
+                itemList.push(item.commonItem.name)
+            })
+            return itemList
+        }
     },
     methods: {
         prepareColumn(item, header){

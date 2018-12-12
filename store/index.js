@@ -8,17 +8,25 @@ const createStore = () => {
             groups: [],
             branches: [],
             commons: [],
+            moduleCommons: [],
             loading: false,
             selectedCommon: null,
             busy: false,
             error: null,
             success: false,
-            token: null
+            token: null,
+            modules: [
+                {text: "Üyeler" , value: "member"},
+                {text: "Şubeler", value: "branch"},
+                {text: "Gruplar", value: "group"}
+            ],
         },
         getters: {
-
+            modules(state){
+                return state.modules
+            },
             selectedCommon(state){
-                if(!state.selectedCommon)
+                if(state.selectedCommon === undefined || state.selectedCommon === null) 
                     state.selectedCommon = state.commons[0]
                 return state.selectedCommon
             },
@@ -35,14 +43,17 @@ const createStore = () => {
                   })
                 }
             },
+            loadedModuleCommons(state){
+                return state.moduleCommons
+            },
             loadedGroups(state){
-                return state.groups;
+                return state.groups
             },
             loadedBranches(state){
-                return state.branches;
+                return state.branches
             },
             loadedCommons(state){
-                return state.commons;
+                return state.commons
             },
             fetchCommon (state) {
                 return (id) => {
@@ -57,6 +68,23 @@ const createStore = () => {
                         return commonItem === item
                     })
                 }
+            },
+            moduleCommonsByModuleName(state){
+                return(moduleValue) => {
+                    return state.moduleCommons.filter(moduleCommon => moduleCommon.module.value === moduleValue)
+                }
+            },
+            modulesBySelectedCommon(state){
+                let modules = []
+                if( state.selectedCommon.name !== null && state.selectedCommon.name !== undefined){
+                    let moduleCommons = state.moduleCommons.filter(moduleCommon => moduleCommon.commonItem.id === state.selectedCommon.id)
+                    moduleCommons.forEach(item => {
+                        modules.push(item.module)
+
+                    })
+                }
+
+                return modules
             },
             loading (state) {
                 return state.loading
@@ -73,6 +101,7 @@ const createStore = () => {
         },
         mutations: {
             setSelectedCommon(state, common){
+                
                 state.selectedCommon = common
             },
             setMembers(state, members) {
@@ -128,6 +157,13 @@ const createStore = () => {
                   common => common.id == editedCommon.id
                 );
                 Object.assign(itemToUpdate,editedCommon)
+            },
+
+            setModuleCommons(state, moduleCommons) {
+                Object.assign(state.moduleCommons, moduleCommons)
+            },
+            addModuleCommon(state, moduleCommon){
+                state.moduleCommons.push(moduleCommon)
             },
 
             setToken(state, token) {
@@ -268,7 +304,6 @@ const createStore = () => {
                 })
                 .catch(e => console.log(e))
             },
-
             loadCommons({commit}){
                 commit('setLoading', true)
                 return this.$axios
@@ -332,6 +367,50 @@ const createStore = () => {
                     commit('setError', e.response.data.error)
                     commit('setSuccess', false)
                 })
+            },
+            loadModuleCommons({commit}){
+                commit('setLoading', true)
+                return this.$axios
+                    .$get("/moduleCommons.json")
+                    .then(data => {
+                        const itemsArray = [];
+                        for(const key in data){
+                            itemsArray.push({ ...data[key], id: key });
+                        }
+                        commit("setModuleCommons", itemsArray);
+                        commit('setLoading', false);
+                    })
+                    .catch(e => {
+                        commit('setLoading', false)
+                        commit('setError', e.response.data.error)
+                    });
+            },
+            addModuleCommons({commit, state}, modules){
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                console.log("addModuleCommons " +modules)
+                modules.forEach(moduleItem => {
+
+                    const commonModule = {
+                        module : moduleItem,
+                        commonItem : state.selectedCommon
+                    }
+                    if( ! state.moduleCommons.some(el =>  ( el.module.text === commonModule.module.text && el.commonItem.name === commonModule.commonItem.name ) ) ){
+                        return this.$axios
+                        .$post(
+                            "https://anadolu-vakfi.firebaseio.com/moduleCommons.json?auth=" +state.token, commonModule)
+                        .then(data => {
+                            commit('addModuleCommon', {...commonModule, id: data.name})
+                            commit('setBusy', false);
+                            commit('setSuccess', true)
+                        })
+                        .catch(e => {
+                            commit('setBusy', false)
+                            commit('setError', e.response.data.error)
+                            commit('setSuccess', false)
+                        });
+                    }
+                });
             },
             clearError ({commit}) {
                 commit('clearError')

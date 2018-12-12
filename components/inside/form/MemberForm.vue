@@ -2,47 +2,68 @@
 
   <div id="page-text-fields">
     
-      <v-layout row wrap>
-        <v-flex lg12>
-          <v-widget :title="formTitle" backTo="/app/membership" >
+      <v-layout>
+        <v-flex lg12 sm6 >
+          <v-widget :title="member ? 'Yeni Üye'  : 'Üye Güncelle'" backTo="/app/membership" >
             <div slot="widget-content">
-                <v-container>
+                
                     <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
-                    <FormInput                                        
+                    <v-container fluid>
+                        <v-layout row wrap>
+                        
+                        <FormInput >
+                            <v-text-field slot="form-field"
+                                v-model="member.fullname"
+                                label="Ad Soyad"    
+                                :rules="[rules.required]"
+                            ></v-text-field>
+                        </FormInput>
+
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="member.identityNumber"
+                                mask="###########"
+                                counter                            
+                                maxlength="11"
+                                minlength="11"
+                                label="Kimlik No"
+                            ></v-text-field>
+
+                        </FormInput>
+
+                        <FormInput v-for="(item,index) in commonItemList" :key="index">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="member.commons[index]"
+                                :items="item.items"
+                                item-text="name"
+                                item-value="name"
+                                :label="item.name"
+                                :rules="[rules.required]"
+                                single-line
                             >
-                        <v-text-field slot="form-text-field2"
-                            v-model="member.identityNumber"
-                            mask="###########"
-                            counter
-                            maxlength="11"
-                            minlength="11"
-                            label="Kimlik No"
-                        ></v-text-field>
-                        <v-text-field slot="form-text-field1"
-                            v-model="member.fullname"
-                            label="Ad Soyad"    
-                            :rules="[rules.required]"
-                        ></v-text-field>
-                    </FormInput>
+                            </v-autocomplete>
+                        </FormInput>
 
                     <FormInput>
-                        <v-text-field slot="form-text-field1"
+                        <v-text-field slot="form-field"
                             v-model="member.email"
                             label="Email" 
-                            :rules="[rules.required,rules.email]"   
+                            :rules="[rules.required,rules.email]" 
                         ></v-text-field>
-                        <v-text-field slot="form-text-field2"
+                    </FormInput>
+                     <FormInput>
+                        <v-text-field slot="form-field"
                             v-model="member.phone"
                             label="Telefon"
                             mask="(###) ### - ####"
-                            :rules="[rules.required]"
+                            :rules="[rules.required,rules.uniquePhone]"
                         ></v-text-field>
                     </FormInput>
+                    
                     <FormInput>
-
-
                         <v-autocomplete
-                            slot="form-text-field1"
+                            slot="form-field"
                             v-model="member.branch"
                             :items="branchList"
                             item-text="branchName"
@@ -52,20 +73,16 @@
                             single-line
                         >
                         </v-autocomplete>
-                        <v-text-field slot="form-text-field2"
-                            v-model="member.jobTitle"
-                            label="Meslek" 
-                        ></v-text-field>
-
                     </FormInput>
                     <FormInput>
-                        <v-textarea slot="form-text-field2"
+                        <v-textarea slot="form-field"
                             v-model="member.address"
                             label="Adres" 
                         ></v-textarea>
 
                     </FormInput>
-                    <v-layout row>
+                    
+                    
                         <v-flex xs4>
                         </v-flex>
                         <v-flex xs8>
@@ -80,9 +97,10 @@
                                 İptal
                             </form-button>
                         </v-flex>
-                    </v-layout>
+
+                        </v-layout>
+                     </v-container>
                     </v-form>
-                </v-container>
             </div>
           </v-widget>
         </v-flex>
@@ -92,7 +110,7 @@
             
 
 <script>
-
+import customValidate from '@/mixins/customValidate'
 import VWidget from '@/components/VWidget'
 import FormInput from '@/components/inside/form/FormInput'
 import FormButton from '@/components/inside/form/FormButton'
@@ -108,14 +126,11 @@ export default {
             required: false
         }
     },
-    computed: {
-        formTitle() {
-            return this.loadedMember==null ? 'Yeni Üye' : 'Üye Güncelle'
-        }
-    },
+    mixins: [customValidate],
     data () {
         return {
             valid: true,
+            modelList : this.$store.getters['loadedMembers'],
             member:  this.loadedMember
             ? { ...this.loadedMember }
             : {
@@ -123,16 +138,19 @@ export default {
                 email: "",
                 identityNumber: "",
                 phone: "",
-                jobTitle: "",
                 address: "",
-                branch: ""
+                branch: "",
+                commons : []
             },
             rules: {
                 required: (value) => !!value || 'Zorunlu',
                 email: (value) => {
-                const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return pattern.test(value) || 'Geçersiz email';
-                }    
+                    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    return pattern.test(value) || 'Geçersiz email';
+                },
+                uniquePhone: (value) => {
+                    return !this.modelList.some(el =>  ( el.phone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.'
+                }
             }  
         }
     },
@@ -140,12 +158,26 @@ export default {
         branchList() {
             return this.$store.getters.loadedBranches
 
+        },
+        commonItemList(){
+            let itemList = []
+            const memberCommons = this.$store.getters.moduleCommonsByModuleName("member")
+            memberCommons.forEach(item => {
+                itemList.push(
+                    
+                    item.commonItem
+                )
+            })
+            return itemList
         }
     },
     methods: {
         onSave() {
-             if (this.$refs.form.validate())
+
+            if (this.$refs.form.validate())
                 this.$emit('submit', this.member)
+
+
         },
         onCancel() {
         // Navigate back
