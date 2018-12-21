@@ -1,6 +1,5 @@
 <template>
   <form  @submit.prevent="onSignin">
-    <v-card>
     <v-layout row v-if="error">
       <v-flex>
         <app-alert @dismissed="onDismissed" type="error" :text="error.message | errorMessage"></app-alert>
@@ -26,7 +25,9 @@
         ></v-text-field>
         </v-card-text>
         <v-spacer/>
-              <v-btn
+        <v-layout align-center justify-center>
+            <v-btn
+              
               type="submit"
                 color="primary"
                 flat
@@ -36,7 +37,9 @@
                       <v-icon light>cached</v-icon>
                   </span>
                 </v-btn>
-    </v-card>
+
+        </v-layout>
+
   </form>
 </template>
 

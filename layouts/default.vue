@@ -1,8 +1,7 @@
 <template>
 <v-app>
-    <Header/>
     <v-content >
-      <v-container fluid >
+      <v-container fluid fill-height>
         <router-view>
           <nuxt />
         </router-view>

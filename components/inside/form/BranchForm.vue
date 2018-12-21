@@ -17,19 +17,6 @@
                                 :rules="[rules.required]"
                             ></v-text-field>
                         </FormInput>
-                        <FormInput v-for="(item,index) in commonItemList" :key="index">
-                            <v-autocomplete
-                                slot="form-field"
-                                v-model="branch.commons[index]"
-                                :items="item.items"
-                                item-text="name"
-                                item-value="name"
-                                :label="item.name"
-                                :rules="[rules.required]"
-                                single-line
-                            >
-                            </v-autocomplete>
-                        </FormInput>
                         <FormInput>
                             <v-text-field slot="form-field"
                                 v-model="branch.branchPhone"

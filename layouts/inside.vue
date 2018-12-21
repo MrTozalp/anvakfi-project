@@ -50,8 +50,8 @@ export default {
   created(){
     this.$store.dispatch("loadMembers");
     this.$store.dispatch("loadBranches");
-    this.$store.dispatch("loadCommons");
-    this.$store.dispatch("loadModuleCommons");
+    this.$store.dispatch("loadCommonList");
+    //this.$store.dispatch("loadModuleCommons");
   }
 }
 </script>

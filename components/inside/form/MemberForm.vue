@@ -31,56 +31,68 @@
 
                         </FormInput>
 
-                        <FormInput v-for="(item,index) in commonItemList" :key="index">
+                        <FormInput v-if="genderList.length > 0">
                             <v-autocomplete
                                 slot="form-field"
-                                v-model="member.commons[index]"
-                                :items="item.items"
+                                v-model="member.gender"
+                                :items="genderList"
                                 item-text="name"
-                                item-value="name"
-                                :label="item.name"
+                                item-value="id"
+                                label="Cinsiyet"
                                 :rules="[rules.required]"
                                 single-line
                             >
                             </v-autocomplete>
                         </FormInput>
+                        <FormInput v-if="occupationList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="member.occupation"
+                                :items="occupationList"
+                                item-text="name"
+                                item-value="id"
+                                label="Meslek"
+                                :rules="[rules.required]"
+                                single-line
+                            >
+                            </v-autocomplete>
+                        </FormInput>
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="member.email"
+                                label="Email" 
+                                :rules="[rules.required,rules.email]" 
+                            ></v-text-field>
+                        </FormInput>
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="member.phone"
+                                label="Telefon"
+                                mask="(###) ### - ####"
+                                :rules="[rules.required,rules.uniquePhone]"
+                            ></v-text-field>
+                        </FormInput>
+                        
+                        <FormInput v-if="branchList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="member.branch"
+                                :items="branchList"
+                                item-text="branchName"
+                                item-value="id"
+                                label="Şube"
+                                :rules="[rules.required]"
+                                single-line
+                            >
+                            </v-autocomplete>
+                        </FormInput>
+                        <FormInput>
+                            <v-textarea slot="form-field"
+                                v-model="member.address"
+                                label="Adres" 
+                            ></v-textarea>
 
-                    <FormInput>
-                        <v-text-field slot="form-field"
-                            v-model="member.email"
-                            label="Email" 
-                            :rules="[rules.required,rules.email]" 
-                        ></v-text-field>
-                    </FormInput>
-                     <FormInput>
-                        <v-text-field slot="form-field"
-                            v-model="member.phone"
-                            label="Telefon"
-                            mask="(###) ### - ####"
-                            :rules="[rules.required,rules.uniquePhone]"
-                        ></v-text-field>
-                    </FormInput>
-                    
-                    <FormInput>
-                        <v-autocomplete
-                            slot="form-field"
-                            v-model="member.branch"
-                            :items="branchList"
-                            item-text="branchName"
-                            item-value="id"
-                            label="Şube"
-                            :rules="[rules.required]"
-                            single-line
-                        >
-                        </v-autocomplete>
-                    </FormInput>
-                    <FormInput>
-                        <v-textarea slot="form-field"
-                            v-model="member.address"
-                            label="Adres" 
-                        ></v-textarea>
-
-                    </FormInput>
+                        </FormInput>
                     
                     
                         <v-flex xs4>
@@ -114,6 +126,7 @@ import customValidate from '@/mixins/customValidate'
 import VWidget from '@/components/VWidget'
 import FormInput from '@/components/inside/form/FormInput'
 import FormButton from '@/components/inside/form/FormButton'
+
 export default {
     components: {
         VWidget,
@@ -140,7 +153,8 @@ export default {
                 phone: "",
                 address: "",
                 branch: "",
-                commons : []
+                gender: "",
+                occupation: ""
             },
             rules: {
                 required: (value) => !!value || 'Zorunlu',
@@ -158,6 +172,12 @@ export default {
         branchList() {
             return this.$store.getters.loadedBranches
 
+        },
+        genderList() {
+            return this.$store.getters.selectedCommonList('gender')
+        },
+        occupationList() {
+            return this.$store.getters.selectedCommonList('occupation')
         },
         commonItemList(){
             let itemList = []

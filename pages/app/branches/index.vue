@@ -18,7 +18,7 @@
 import Table from '@/components/inside/table/Table'
 export default {
   layout: 'inside',
-  middleware: ["check-auth", "auth"],
+  middleware: ["check-auth", "auth","common"],
     components: {
     Table
   },

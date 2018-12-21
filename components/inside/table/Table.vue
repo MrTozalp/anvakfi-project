@@ -59,7 +59,7 @@
                     ></v-checkbox>
                 </td>
 
-                <td  @click="props.expanded = !props.expanded" v-for="(header,index) in tableConfig.headers" :key="index">
+                <td  v-for="(header,index) in tableConfig.headers" :key="index">
                     {{ 
                         { 
                             value: props.item[header.value],
@@ -79,7 +79,7 @@
                         content="Kaydı silmek istiyor musunuz?"
                         actionBtnTitle="SİL"
                         defaultBtnTitle="İPTAL"
-                        @click="deleteRecord(props.item)"
+                        @dialogAction="deleteRecord(props.item)"
                         >
                         <v-btn slot="actionActivator"                    
                             depressed outline icon fab dark small color="red"
@@ -90,15 +90,6 @@
                 
             </tr>
         </template>
-        
-        <template slot="expand" slot-scope="props">
-            <v-card flat>
-                <v-card-text>Peek-a-boo!</v-card-text>
-            </v-card>
-        </template>
-        
-
-
         </v-data-table>
     </div>
 </template>
@@ -166,6 +157,10 @@ export default {
             memberToExport.forEach(function(v){ 
                 delete v.id;
                 delete v.updatedDate;
+                delete v.createdDate;
+                delete v.gender;
+                delete v.occupation;
+                delete v.branch
             });
             const excelHeader = []
             let excelHeaderObject = {}

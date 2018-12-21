@@ -8,7 +8,7 @@ const Menu =  [
     { divider: true },
     { heading: 'Admin' },
     { name: 'app-users', icon: 'accessibility', text: 'Kullanıcılar', to:'/app/users' },
-    { name: 'app-common', icon: 'label', text: 'Genel Bilgiler' , to:'/app/common'},
+    { name: 'app-common', icon: 'label', text: 'Genel Bilgiler' , to:'/app/commons'},
     { divider: true }
 ]
 

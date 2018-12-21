@@ -15,6 +15,11 @@ const createStore = () => {
             error: null,
             success: false,
             token: null,
+            commonList: [],
+            commonValues: [ 
+                {value: "gender", text: "Cinsiyet"},
+                {value: "occupation", text: "Meslek"}
+            ],
             modules: [
                 {text: "Üyeler" , value: "member"},
                 {text: "Şubeler", value: "branch"},
@@ -43,6 +48,13 @@ const createStore = () => {
                   })
                 }
             },
+            selectedCommonList(state){
+                return(value) => {
+                    return state.commonList.filter((listItem) => {
+                        return listItem.value === value
+                    })
+                }
+            },
             loadedModuleCommons(state){
                 return state.moduleCommons
             },
@@ -57,11 +69,22 @@ const createStore = () => {
             },
             fetchCommon (state) {
                 return (id) => {
-                  return state.commons.find((common) => {
+                  return state.commonList.find((common) => {
                     return common.id === id
                   })
                 }
             },
+            commonName (state) {
+                return(value) => {
+                    return state.commonValues.find((common) => {
+                        return common.value === value
+                    }).text
+                }
+            },
+            commonValues(state){
+                return state.commonValues
+            },
+
             fetchCommonItem(state) {
                 return(item) => {
                     return state.selectedCommon.items.find((commonItem) => {
@@ -69,6 +92,7 @@ const createStore = () => {
                     })
                 }
             },
+            /*
             moduleCommonsByModuleName(state){
                 return(moduleValue) => {
                     return state.moduleCommons.filter(moduleCommon => moduleCommon.module.value === moduleValue)
@@ -85,7 +109,7 @@ const createStore = () => {
                 }
 
                 return modules
-            },
+            },*/
             loading (state) {
                 return state.loading
             },
@@ -140,20 +164,27 @@ const createStore = () => {
                 );
                 state.branches[branchIndex] = editedBranch
             },
-            deleteCommon(state, deletedCommon) {
-                const index = state.commons.findIndex(
+            deleteCommonItem(state, deletedCommon) {
+                const index = state.commonList.findIndex(
                     common => common.id === deletedCommon.id
                 );
-                state.commons.splice(index,1);
+                state.commonList.splice(index,1);
             },
             setCommons(state, commons) {
                 state.commons = commons
             },
+            /*
             addCommon(state, common) {
                 state.commons.push(common)
+            },*/
+            setCommonList(state, commonList) {
+                state.commonList = commonList
+            },
+            addCommonItem(state, newItem) {
+                state.commonList.push(newItem)
             },
             editCommon(state, editedCommon) {
-                let itemToUpdate = state.commons.find(
+                let itemToUpdate = state.commonList.find(
                   common => common.id == editedCommon.id
                 );
                 Object.assign(itemToUpdate,editedCommon)
@@ -212,10 +243,14 @@ const createStore = () => {
                     });
             },
             addMember({commit,state}, member) {
-                const memberBranch = state.branches.find(element => element.id == member.branch);
+                const memberBranch = state.branches.find(element => element.id == member.branch)
+                const memberGender = state.commonList.find(element => element.id == member.gender)
+                const memberOccupation = state.commonList.find(element => element.id == member.occupation)
                 const createdMember = {
                     ...member,
                     branchName: memberBranch.branchName,
+                    genderName: memberGender.name,
+                    occupationName: memberOccupation.name,
                     createdDate: new Date()
                 }
                 return this.$axios
@@ -227,11 +262,15 @@ const createStore = () => {
                 .catch(e => console.log(e));
             },
             editMember({commit,state}, member) {
-                const memberBranch = state.branches.find(element => element.id == member.branch);
+                const memberBranch = state.branches.find(element => element.id == member.branch)
+                const memberGender = state.commonList.find(element => element.id == member.gender)
+                const memberOccupation = state.commonList.find(element => element.id == member.occupation)
 
                 const editedMember = {
                     ...member,
                     branchName: memberBranch.branchName,
+                    genderName: memberGender.name,
+                    occupationName: memberOccupation.name,
                     updatedDate: new Date()
                 }
                 return this.$axios
@@ -304,6 +343,7 @@ const createStore = () => {
                 })
                 .catch(e => console.log(e))
             },
+            /*
             loadCommons({commit}){
                 commit('setLoading', true)
                 return this.$axios
@@ -320,17 +360,18 @@ const createStore = () => {
                         commit('setLoading', false)
                         commit('setError', e.response.data.error)
                     });
-            },
-            deleteCommon(vuexContext, deletedCommon) {
+            },*/
+            deleteCommonItem(vuexContext, deletedCommon) {
                 return this.$axios
-                .$delete("https://anadolu-vakfi.firebaseio.com/commons/" +
+                .$delete("https://anadolu-vakfi.firebaseio.com/commonList/" +
                 deletedCommon.id +
                 ".json?auth="+ vuexContext.state.token, deletedCommon)
                 .then(res => {
-                    vuexContext.commit('deleteCommon', deletedCommon)
+                    vuexContext.commit('deleteCommonItem', deletedCommon)
                 })
                 .catch(e => console.log(e))
             },
+            /*
             addCommon({commit,state}, newCommon) {
                 commit('setSuccess', false)
                 commit('setBusy', true)
@@ -347,7 +388,92 @@ const createStore = () => {
                     commit('setError', e.response.data.error)
                     commit('setSuccess', false)
                 });
+            },*/
+            loadCommonList({commit}){
+                commit('setLoading', true)
+                return this.$axios
+                    .$get("/commonList.json")
+                    .then(data => {
+                        const commonsArray = [];
+                        for(const key in data){
+                            commonsArray.push({ ...data[key], id: key });
+                        }
+                        commit("setCommonList", commonsArray);
+                        commit('setLoading', false);
+                    })
+                    .catch(e => {
+                        commit('setLoading', false)
+                        commit('setError', e.response.data.error)
+                    });
             },
+            addCommonItems({commit,state}, newExcelRecord) {
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                newExcelRecord.itemList.forEach((item, index) => {
+                    console.log("item: "+item[Object.keys(item)[0]])
+                    const newItem = {
+                        name : item[Object.keys(item)[0]],
+                        value: newExcelRecord.value
+                    }
+
+                    return this.$axios
+                    .$post(
+                        "https://anadolu-vakfi.firebaseio.com/commonList.json?auth=" +state.token, newItem)
+                        .then(data => {
+                            commit('addCommonItem', {...newItem, id: data.name})
+                            if(newExcelRecord.itemList.length === index + 1){
+                                
+                                commit('setSuccess', true)
+                                commit('setBusy', false)
+                            }
+
+                        })
+                        .catch(e => {
+                            
+                            commit('setError', e.response.data.error)
+                            commit('setSuccess', false)
+                            commit('setBusy', false)
+                        });
+                    
+                    })
+            },
+            addCommonItem({commit,state}, newItem) {
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                return this.$axios
+                .$post(
+                    "https://anadolu-vakfi.firebaseio.com/commonList.json?auth=" +state.token, newItem)
+                .then(data => {
+                    commit('addCommonItem', {...newItem, id: data.name})
+                    commit('setBusy', false);
+                    commit('setSuccess', true)
+                })
+                .catch(e => {
+                    commit('setBusy', false)
+                    commit('setError', e.response.data.error)
+                    commit('setSuccess', false)
+                });
+            },
+            editCommonItem({commit, state}, editedCommon) {
+                commit('setSuccess', false)
+                commit('setBusy', true)
+                console.log("edited common id : " +editedCommon.id)
+                return this.$axios
+                .$put("https://anadolu-vakfi.firebaseio.com/commonList/" +
+                editedCommon.id +
+                ".json?auth=" + state.token, editedCommon)
+                .then(res => {
+                    commit('editCommon', editedCommon)
+                    commit('setBusy', false);
+                    commit('setSuccess', true)
+                })
+                .catch(e => {                    
+                    commit('setBusy', false)
+                    commit('setError', e.response.data.error)
+                    commit('setSuccess', false)
+                })
+            },
+            /*
             editCommon({commit, state}, editedCommon) {
                 commit('setSuccess', false)
                 commit('setBusy', true)
@@ -367,7 +493,7 @@ const createStore = () => {
                     commit('setError', e.response.data.error)
                     commit('setSuccess', false)
                 })
-            },
+            },*/
             loadModuleCommons({commit}){
                 commit('setLoading', true)
                 return this.$axios

@@ -67,7 +67,7 @@
       
       >
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <span class="title ml-3 mr-5">Bzm&nbsp;<span class="font-weight-light">Vakıf</span></span>
+      <span class="title ml-3 mr-5">Anadolu Eğitim ve Kültür Vakfı</span>
       <v-spacer></v-spacer>
 
     </v-toolbar>
@@ -93,7 +93,7 @@ import menu from '@/static/menu'
     methods: {
       onLogout() {
         this.$store.dispatch("logout");
-        this.$router.push("/auth");
+        this.$router.push("/");
         
       }
     }

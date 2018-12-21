@@ -16,6 +16,7 @@
 <script>
 export default {
     layout: 'inside',
+    middleware: ["check-auth", "auth","common"],
     methods : {
         exportWord(){
             var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+

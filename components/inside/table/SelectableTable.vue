@@ -9,7 +9,14 @@
                 placeholder="Ara"
                 class="hidden-sm-and-down"
             >
+   
             </v-text-field>
+            <v-btn
+                @click="goToImport"
+                slot="toolbarAction"
+                icon small>
+                <v-icon >donut_large</v-icon>
+            </v-btn>
 
         </TblToolbar>
 
@@ -22,7 +29,7 @@
         </v-layout>
         <v-text-field
             v-model="record"
-            v-if="isNewRecord"
+            v-if="isRecordAction"
             placeholder="Yeni Kayıt"
             single-line
             :rules="[rules.required]" 
@@ -59,7 +66,7 @@
         "{{ search }}" aramasına göre sonuç bulunmamaktadır :(
     </v-alert>
     <template slot="items" slot-scope="props">
-        <tr @click="selectRow(props.item)">
+        <tr>
             <td>{{ props.item.name }}</td>
 
                 <dialog-button
@@ -68,7 +75,7 @@
                         content="Genel Bilgiyi bağlamak istediğiniz modülleri seçiniz."
                         actionBtnTitle="Onayla"
                         defaultBtnTitle="İptal"
-                        @click="saveConnection"
+                        @dialogAction="saveConnection"
                     >
                     <v-autocomplete
                         slot="form"
@@ -105,7 +112,7 @@
                     content="Kaydı silmek istiyor musunuz?"
                     actionBtnTitle="SİL"
                     defaultBtnTitle="İPTAL"
-                    @click="deleteRecord(props.item)"
+                    @dialogAction="deleteRecord(props.item)"
                     >
                     <v-btn slot="actionActivator"                    
                         depressed outline icon fab dark small color="red"
@@ -122,7 +129,7 @@
 </template>
 
 <script>
-
+import XLSX from 'xlsx'
 import { mapGetters } from 'vuex'
 import TblToolbar from '@/components/inside/table/Toolbar'
 import DialogButton from '@/components/inside/Dialog'
@@ -134,7 +141,7 @@ export default {
     data () {
         return {
             valid: true,
-            isNewRecord : false,
+            isRecordAction : false,
             record: "",
             isSuccessMessage : false,
             modulesForSelect : [],
@@ -143,7 +150,8 @@ export default {
                 name: ''
             },
             rules: {
-                required: (value) => !!value || 'Zorunlu'
+                required: (value) => !!value || 'Zorunlu',
+                fileRequired: () => !!this.fileUrl || 'Zorunlu'
             } 
         }
     },
@@ -168,13 +176,12 @@ export default {
 
     },
     methods: {
+        /*
         onConnectionModule(item){
-            
             this.$store.commit('setSelectedCommon',item)
             this.modulesForSelect = [...this.modulesBySelectedCommon]
-            
-
         },
+        
         selectRow(item){
             if(this.isParent){
                 this.$store.commit('setSelectedCommon',item)
@@ -182,6 +189,7 @@ export default {
             }
 
         },
+        
         onSave() {
              if (this.$refs.form.validate()){
                  if(this.editedRecord.name){
@@ -198,11 +206,37 @@ export default {
                     
                 
              }
+        },*/
+        goToImport(){
+            this.$emit("importClick")
+
+        },
+        onSave() {
+             if (this.$refs.form.validate()){
+                 if(this.editedRecord.name){
+                     console.log("edited record: " + this.editedRecord )
+                    this.$emit('edit',  { ...this.editedRecord , name: this.record  })  
+                    this.editedRecord = ''
+
+                 }else{
+                     console.log("new record!!!")
+                     this.$emit('newRecord', {
+                            name: this.record
+                         })
+                 }
+             }
         },
         newRecord(){
-            this.isNewRecord = true
+            this.isRecordAction = true
             this.dismissMessage()
         },
+        editRecord(selectedItem) {
+            this.dismissMessage()
+            this.editedRecord = this.$store.getters.fetchCommon(selectedItem.id)
+            this.record = this.editedRecord.name
+            this.isRecordAction = true
+        },
+        /*
         editRecord(selectedItem) {
             this.dismissMessage()
             if(this.isParent){
@@ -219,9 +253,9 @@ export default {
             }
 
 
-        },
+        },*/
         clearRecord() {
-            this.isNewRecord = false
+            this.isRecordAction = false
             this.record = ''
             this.editedRecord  = ''
         
@@ -243,7 +277,7 @@ export default {
     },
     watch: {
         success(val){
-            if(val === true && this.isNewRecord){
+            if(val === true && this.isRecordAction){
                     this.isSuccessMessage = true
                     if(this.editedRecord)
                         this.$emit('select', this.editedRecord)
@@ -255,3 +289,4 @@ export default {
     }
 }
 </script>
+
