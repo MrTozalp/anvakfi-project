@@ -15,7 +15,7 @@
                 @click="goToImport"
                 slot="toolbarAction"
                 icon small>
-                <v-icon >donut_large</v-icon>
+                <v-icon >vertical_align_top</v-icon>
             </v-btn>
 
         </TblToolbar>
