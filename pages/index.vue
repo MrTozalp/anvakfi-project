@@ -5,7 +5,7 @@
     <v-flex
       xs12
       sm8
-      md4>
+      md3>
         <v-widget logo centeredTitle="ÜYE YÖNETİM PORTALI">
           <login slot="widget-content"/>
         </v-widget>

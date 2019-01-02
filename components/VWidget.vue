@@ -50,7 +50,7 @@ export default {
       default: true
     },
     centeredTitle: {
-      type: Boolean
+      type: String
     },
     contentBg: {
       type: String,
