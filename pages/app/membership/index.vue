@@ -34,34 +34,21 @@ export default {
             value: 'branchName'
           },
           {
-            text: 'Kimlik No',
-            value: 'identityNumber'
-          },
-          {
             text: 'Ad Soyad',
             value: 'fullname'
           },
-          {
-            text: 'Cinsiyet',
-            value: 'genderName'
-          },
-
           {
             text: 'Meslek',
             value: 'occupationName'
           },
           {
-            text: 'Telefon',
-            value: 'phone',
+            text: 'Cep Telefonu',
+            value: 'mobilePhone',
             filter: 'phone'
           },
           {
             text: 'Email',
             value: 'email'
-          },
-          {
-            text: 'Adres',
-            value: 'address'
           }
         ],
         rows_per_page_items: [10,25,50,{text:'All','value':-1}] ,

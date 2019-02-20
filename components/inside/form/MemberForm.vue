@@ -40,7 +40,6 @@
                                 item-value="id"
                                 label="Cinsiyet"
                                 :rules="[rules.required]"
-                                single-line
                             >
                             </v-autocomplete>
                         </FormInput>
@@ -53,7 +52,6 @@
                                 item-value="id"
                                 label="Meslek"
                                 :rules="[rules.required]"
-                                single-line
                             >
                             </v-autocomplete>
                         </FormInput>
@@ -61,16 +59,51 @@
                             <v-text-field slot="form-field"
                                 v-model="member.email"
                                 label="Email" 
-                                :rules="[rules.required,rules.email]" 
+                                :rules="[rules.email]" 
                             ></v-text-field>
                         </FormInput>
                         <FormInput>
                             <v-text-field slot="form-field"
-                                v-model="member.phone"
-                                label="Telefon"
+                                v-model="member.mobilePhone"
+                                label="Cep Telefonu"
                                 mask="(###) ### - ####"
                                 :rules="[rules.required,rules.uniquePhone]"
                             ></v-text-field>
+                        </FormInput>
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="member.homePhone"
+                                label="Ev Telefonu"
+                                mask="(###) ### - ####"
+                            ></v-text-field>
+                        </FormInput>
+
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="member.workPhone"
+                                label="İş Telefonu"
+                                mask="(###) ### - ####"
+                            ></v-text-field>
+                        </FormInput>
+
+                        <FormInput>
+
+                         <v-radio-group 
+                            label="Etiket Adresi Seçimi" 
+                            slot="form-field" 
+                            :rules="[rules.required]"
+                            row 
+                            v-model="member.addressChoice">
+
+                            <v-radio
+                                label="Ev Adresi"
+                                value="0"
+                            ></v-radio>
+                            <v-radio
+                                label="İş Adresi"
+                                value="1"
+                            ></v-radio>
+                        </v-radio-group>
                         </FormInput>
                         
                         <FormInput v-if="branchList.length > 0">
@@ -81,19 +114,23 @@
                                 item-text="branchName"
                                 item-value="id"
                                 label="Şube"
-                                :rules="[rules.required]"
-                                single-line
                             >
                             </v-autocomplete>
                         </FormInput>
                         <FormInput>
                             <v-textarea slot="form-field"
-                                v-model="member.address"
-                                label="Adres" 
+                                v-model="member.homeAddress"
+                                label="Ev Adresi" 
                             ></v-textarea>
 
                         </FormInput>
-                    
+                        <FormInput>
+                            <v-textarea slot="form-field"
+                                v-model="member.workAddress"
+                                label="İş Adresi" 
+                            ></v-textarea>
+
+                        </FormInput>
                     
                         <v-flex xs4>
                         </v-flex>
@@ -150,8 +187,12 @@ export default {
                 fullname: "",
                 email: "",
                 identityNumber: "",
-                phone: "",
-                address: "",
+                mobilePhone: "",
+                homePhone: "",
+                workPhone: "",
+                homeAddress: "",
+                workAddress: "",
+                addressChoice: "",
                 branch: "",
                 gender: "",
                 occupation: ""
@@ -159,8 +200,10 @@ export default {
             rules: {
                 required: (value) => !!value || 'Zorunlu',
                 email: (value) => {
-                    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                    return pattern.test(value) || 'Geçersiz email';
+                    if(value.length > 0){
+                        const pattern = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+                        return  pattern.test(value) || 'Geçersiz email';
+                    }
                 },
                 uniquePhone: (value) => {
                     return !this.modelList.some(el =>  ( el.phone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.'
@@ -171,7 +214,6 @@ export default {
     computed: {
         branchList() {
             return this.$store.getters.loadedBranches
-
         },
         genderList() {
             return this.$store.getters.selectedCommonList('gender')
@@ -183,10 +225,7 @@ export default {
             let itemList = []
             const memberCommons = this.$store.getters.moduleCommonsByModuleName("member")
             memberCommons.forEach(item => {
-                itemList.push(
-                    
-                    item.commonItem
-                )
+                itemList.push(item.commonItem)
             })
             return itemList
         }
