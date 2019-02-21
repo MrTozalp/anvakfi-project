@@ -18,7 +18,8 @@ const createStore = () => {
             commonList: [],
             commonValues: [ 
                 {value: "gender", text: "Cinsiyet"},
-                {value: "occupation", text: "Meslek"}
+                {value: "occupation", text: "Meslek"},
+                {value: "hometown", text: "Memleket"}
             ],
             modules: [
                 {text: "Üyeler" , value: "member"},
@@ -246,11 +247,13 @@ const createStore = () => {
                 const memberBranch = state.branches.find(element => element.id == member.branch)
                 const memberGender = state.commonList.find(element => element.id == member.gender)
                 const memberOccupation = state.commonList.find(element => element.id == member.occupation)
+                const memberHometown = state.commonList.find(element => element.id == member.hometown)
                 const createdMember = {
                     ...member,
-                    branchName: memberBranch.branchName,
-                    genderName: memberGender.name,
-                    occupationName: memberOccupation.name,
+                    hometownName: memberHometown ? memberHometown.name : '',
+                    branchName: memberBranch ? memberBranch.branchName : '',
+                    genderName: memberGender ? memberGender.name : '',
+                    occupationName: memberOccupation ? memberOccupation.name : '',
                     createdDate: new Date()
                 }
                 return this.$axios
@@ -265,12 +268,13 @@ const createStore = () => {
                 const memberBranch = state.branches.find(element => element.id == member.branch)
                 const memberGender = state.commonList.find(element => element.id == member.gender)
                 const memberOccupation = state.commonList.find(element => element.id == member.occupation)
-
+                const memberHometown = state.commonList.find(element => element.id == member.hometown)
                 const editedMember = {
                     ...member,
-                    branchName: memberBranch.branchName,
-                    genderName: memberGender.name,
-                    occupationName: memberOccupation.name,
+                    hometownName: memberHometown ? memberHometown.name : '',
+                    branchName: memberBranch ? memberBranch.branchName : '',
+                    genderName: memberGender ? memberGender.name : '',
+                    occupationName: memberOccupation ? memberOccupation.name : '',
                     updatedDate: new Date()
                 }
                 return this.$axios

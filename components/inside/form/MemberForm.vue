@@ -39,7 +39,7 @@
                                 item-text="name"
                                 item-value="id"
                                 label="Cinsiyet"
-                                :rules="[rules.required]"
+                                clearable
                             >
                             </v-autocomplete>
                         </FormInput>
@@ -51,7 +51,7 @@
                                 item-text="name"
                                 item-value="id"
                                 label="Meslek"
-                                :rules="[rules.required]"
+                                clearable
                             >
                             </v-autocomplete>
                         </FormInput>
@@ -84,6 +84,17 @@
                                 label="İş Telefonu"
                                 mask="(###) ### - ####"
                             ></v-text-field>
+                        </FormInput>
+                        <FormInput v-if="hometownList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="member.hometown"
+                                :items="hometownList"
+                                item-text="name"
+                                item-value="id"
+                                label="Memleket"
+                            >
+                            </v-autocomplete>
                         </FormInput>
 
                         <FormInput>
@@ -195,13 +206,17 @@ export default {
                 addressChoice: "",
                 branch: "",
                 gender: "",
-                occupation: ""
+                occupation: "",
+                hometown: ""
             },
             rules: {
                 required: (v) => !!v || 'Zorunlu',
-                email: (v) =>  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Geçersiz email',
+                email: (v) =>  v ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Geçersiz email' : true,
                 uniquePhone: (value) => {
-                    return !this.modelList.some(el =>  ( el.phone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.'
+                    if(value != '0000000000' ){
+                        return  !this.modelList.some(el =>  ( el.mobilePhone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.' 
+                    }
+                    else return true
                 }
             }  
         }
@@ -215,6 +230,9 @@ export default {
         },
         occupationList() {
             return this.$store.getters.selectedCommonList('occupation')
+        },
+        hometownList() {
+            return this.$store.getters.selectedCommonList('hometown')
         },
         commonItemList(){
             let itemList = []

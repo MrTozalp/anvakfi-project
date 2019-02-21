@@ -13,6 +13,7 @@
           label="Email"
           v-model="email"
           :disabled = "!isInstSelected"
+          :rules="[rules.required, rules.email]"
           required
         ></v-text-field>
         <v-text-field
@@ -21,6 +22,7 @@
           type="password"
           v-model="password"
           label="Parola"
+          :rules="[rules.required]"
           required
         ></v-text-field>
         </v-card-text>
@@ -57,7 +59,14 @@ export default {
       logoSrc: '',
       isInstSelected : true,
       email: '',
-      password: ''
+      password: '',
+      rules: {
+        required: (v) => !!v || 'Bu alanı doldurunuz!',
+        email: (v) =>  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Geçersiz email',
+        uniquePhone: (value) => {
+            return !this.modelList.some(el =>  ( el.phone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.'
+        }
+      }
     }
   },
   methods: {

@@ -2,18 +2,32 @@
     <div>
         <TblToolbar :moreAction="toolbarConfig.moreAction">
             <v-text-field
-                flat solo hide-details
+                
+                hide-details
                 v-model="search"
                 slot="searchField"
-                prepend-inner-icon="search"
-                placeholder="Ara"
+                single-line=""
+                label="Ara"
+                append-icon="search"
                 class="hidden-sm-and-down"
-                
             ></v-text-field>
+            <div 
+                slot="filterField"
+                v-for="header in tableConfig.headers" 
+                :key="header.text" >
+                <v-select
+                    
+                    label="Filtrele"
+                    v-if="filters.hasOwnProperty(header.value)"
+                    v-model="filters[header.value]"
+                    :items="columnValueList(header.value)" 
+                    chips
+                    hide-details
+                    deletable-chips
+                    multiple>
+                </v-select>
+            </div>
 
-            <v-btn slot="toolbarAction" icon>
-                <v-icon>filter_list</v-icon>
-            </v-btn>
             <v-btn slot="toolbarAction" icon 
                 @click="exportToExcel" 
                 >
@@ -27,16 +41,17 @@
             </v-list>
         </TblToolbar>
 
+
         <v-data-table
             :headers="tableConfig.headers"
             :search="search"
-            :items="records"
+            :items="filteredRecords"
             :rows-per-page-items="tableConfig.rows_per_page_items"
             class="elevation-1"
             select-all
             v-model="selected"
             item-key="id"
-        >   
+        >
 
             <template slot="no-data">
                 <v-alert :value="true" color="error" icon="warning">
@@ -49,7 +64,7 @@
             </v-alert>
 
             <template slot="items" slot-scope="props">
-            <tr>
+            <tr align="left">
                 
                 <td>
                     <v-checkbox
@@ -104,7 +119,13 @@ export default {
     data() {
         return {
             selected: [],
-            search: ''
+            search: '',
+            pagination: {
+                sortBy: 'name'
+            },
+            filters: {
+                hometownName: [],
+            },
         }
     },
     components: {
@@ -126,7 +147,13 @@ export default {
         }
     },
     computed: {
-
+        filteredRecords() {
+            return this.records.filter(d => {
+                return Object.keys(this.filters).every(f => {
+                return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+                })
+            })
+        },
         commonNames(){
             let itemList = []
             const memberCommons = this.$store.getters.moduleCommonsByModuleName("member")
@@ -150,6 +177,23 @@ export default {
         deleteRecord(item){
             this.$emit('delete', item)
             
+        },
+        toggleAll () {
+            if (this.selected.length) this.selected = []
+            else this.selected = this.records.slice()
+        },
+
+        changeSort (column) {
+            if (this.pagination.sortBy === column) {
+                this.pagination.descending = !this.pagination.descending
+            } else {
+                this.pagination.sortBy = column
+                this.pagination.descending = false
+            }
+        },
+
+        columnValueList(val) {
+            return this.records.map(d => d[val])
         },
 
         exportToExcel(){
@@ -183,10 +227,6 @@ export default {
             var wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, ws, 'search') 
             XLSX.writeFile(wb, 'üye listesi.xlsx')
-        },
-        showAlert(a){
-      
-            console.log('Alert! \n' + a.branchName);
         },
         exportToWord(){
             var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
