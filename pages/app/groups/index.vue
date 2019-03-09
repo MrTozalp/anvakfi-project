@@ -1,46 +1,69 @@
 <template>
-  <v-layout
-    justify-center
-    align-center>
-    <v-flex
-      xs12
-      sm8
-      md6>
-                
-        <v-btn success @click="exportWord">export word</v-btn>
+  <v-layout row wrap class="pa-1">
+        <v-flex lg12>
+          <v-card > 
+            <v-divider></v-divider>
+            <Table 
+              @delete="onDeleted" 
+              :tableConfig="tableConfig" 
+              :toolbarConfig="toolbarConfig"
+              :records="loadedGroups"
+              />
+          </v-card>
 
-    </v-flex>
+        </v-flex>  
   </v-layout>
+    
 </template>
 
 <script>
-export default {
-    layout: 'inside',
-    middleware: ["check-auth", "auth","common"],
-    methods : {
-        exportWord(){
-            var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
-            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
-            "xmlns='http://www.w3.org/TR/REC-html40'>"+
-            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
-            var context     = "<table><tr>"                     
-            context      = context + "<td>Plevne Mahalesi Zafer Sok. No:18/5 Balıkesir</td>"
-            context      = context + "<td>Yukarıyurtçu Mahallesi Odtü TOki Evleri Blok:10-N Daire:18 Etimesgut</td>"
-            context      = context + "<td>Yukarıyurtçu Mahallesi Odtü TOki Evleri Blok:10-N Daire:18 Etimesgut</td>"
-            context      = context + "</tr></table>"
+import Table from '@/components/inside/table/Table'
 
-            var footer = "</body></html>";
-            var sourceHTML = header+context+footer;
-            
-            var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-            var fileDownload = document.createElement("a");
-            document.body.appendChild(fileDownload);
-            fileDownload.href = source;
-            fileDownload.download = 'document.doc';
-            fileDownload.click();
-            document.body.removeChild(fileDownload);
-        }
+export default {
+  layout: 'inside',
+  middleware: [ 'check-auth','auth','common'],
+  components: {
+      Table
+  },
+  data () {
+    return {
+      tableConfig: {
+
+        headers: [
+          {
+            text: 'Grup Adı',
+            value: 'groupName'
+          },
+          {
+            text: 'Kara Liste Mi',
+            value: 'isBlackList',
+            filter: 'yesNo'
+          }
+        ],
+        rows_per_page_items: [10,25,50,{text:'All','value':-1}] ,
+
+      },
+      toolbarConfig: {
+          exportAction: true,
+          moreAction: true
+      }
     }
+  },
+  computed: {
+    loadedGroups() {
+      return this.$store.state.group.groups
+    }
+  },
+  methods: {
+      onDeleted(groupToDelete) {
+          this.$store.dispatch("group/deleteGroup", groupToDelete)
+      }
+  }
 }
 </script>
+
+<style>
+
+</style>
+
 

@@ -1,11 +1,10 @@
-export default function ({ store, redirect, route }) {
+export default function ({ store, route }) {
     if(!isCommonRoute(route))
-        store.state.selectedCommon = null 
-  }
+        store.dispatch('commonInfo/resetSelectedCommon')
   
   function isCommonRoute(route) {
     if (route.matched.some(record => record.path == '/app/commons')) {
       return true
     }
   }
-  
+}

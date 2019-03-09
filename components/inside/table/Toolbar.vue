@@ -10,7 +10,7 @@
             
         </v-flex>
 
-        <v-flex xs6 >
+        <v-flex xs6 d-flex>
             <v-layout justify-center>
                 <slot name="filterField"></slot>
             </v-layout>

@@ -15,38 +15,38 @@
                 @click="goToImport"
                 slot="toolbarAction"
                 icon small>
-                <v-icon >vertical_align_top</v-icon>
+                <v-icon >publish</v-icon>
             </v-btn>
 
         </TblToolbar>
 
         <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
 
-        <v-layout row v-if="isSuccessMessage">
-            <v-flex>
-                <app-alert @dismissed="dismissMessage" type="success" text="Kayıt başarılı şekilde işlenmiştir!"></app-alert>
-            </v-flex>
-        </v-layout>
-        <v-text-field
-            v-model="record"
-            v-if="isRecordAction"
-            placeholder="Yeni Kayıt"
-            single-line
-            :rules="[rules.required]" 
-            outline
-        >
-            <template slot="append">
-                <v-btn  type="submit" :loading="busy" bottom flat icon color="green">
-                    <v-icon  >done</v-icon>
-                    <span slot="loader" class="custom-loader">
-                      <v-icon light>cached</v-icon>
-                  </span>
-                </v-btn>
-                <v-btn  flat icon  bottom color="red" @click="clearRecord">
-                    <v-icon  >close</v-icon>
-                </v-btn>
-            </template>
-        </v-text-field> 
+            <v-layout row v-if="isSuccessMessage">
+                <v-flex>
+                    <app-alert @dismissed="dismissMessage" type="success" text="Kayıt başarılı şekilde işlenmiştir!"></app-alert>
+                </v-flex>
+            </v-layout>
+            <v-text-field
+                v-model="record"
+                v-if="isRecordAction"
+                placeholder="Yeni Kayıt"
+                single-line
+                :rules="[rules.required]" 
+                outline
+            >
+                <template slot="append">
+                    <v-btn  type="submit" :loading="busy" bottom flat icon color="green">
+                        <v-icon  >done</v-icon>
+                        <span slot="loader" class="custom-loader">
+                        <v-icon light>cached</v-icon>
+                    </span>
+                    </v-btn>
+                    <v-btn  flat icon  bottom color="red" @click="clearRecord">
+                        <v-icon  >close</v-icon>
+                    </v-btn>
+                </template>
+            </v-text-field> 
         </v-form>
 
   <v-data-table
@@ -91,7 +91,6 @@
                         persistent-hint
                         return-object
                     ></v-autocomplete>
-
                     <v-btn
                         @click="onConnectionModule(props.item)"  
                         slot="actionActivator"
@@ -120,8 +119,6 @@
                         <v-icon>delete</v-icon>
                     </v-btn>
                 </dialog-button>
-
-
         </tr>
     </template>
   </v-data-table>
@@ -130,16 +127,19 @@
 
 <script>
 import XLSX from 'xlsx'
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import TblToolbar from '@/components/inside/table/Toolbar'
 import DialogButton from '@/components/inside/Dialog'
+import FormInput from '@/components/inside/form/FormInput'
 export default {
     components: {
         TblToolbar,
-        DialogButton
+        DialogButton,
+        FormInput
     },
     data () {
         return {
+            commonChild: "",
             valid: true,
             isRecordAction : false,
             record: "",
@@ -172,7 +172,12 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([ 'busy', 'error', 'success','selectedCommon','modules','modulesBySelectedCommon']),
+        ...mapState({
+            busy :  state => state.dataAction.busy,
+            error : state => state.dataAction.error,
+            success : state => state.dataAction.success,
+            selectedCommon : state => state.commonInfo.selectedCommon
+        }) 
 
     },
     methods: {
@@ -232,7 +237,7 @@ export default {
         },
         editRecord(selectedItem) {
             this.dismissMessage()
-            this.editedRecord = this.$store.getters.fetchCommon(selectedItem.id)
+            this.editedRecord = this.$store.getters['commonInfo/getCommonById'](selectedItem.id)
             this.record = this.editedRecord.name
             this.isRecordAction = true
         },
@@ -263,11 +268,11 @@ export default {
         },
         dismissMessage() {
             this.isSuccessMessage = false
-            this.$store.dispatch('clearSuccess')
+            this.$store.dispatch('dataAction/clearSuccess')
         },
         saveConnection(){
             console.log(this.modulesForSelect)
-            this.$store.dispatch('addModuleCommons', this.modulesForSelect)
+            this.$store.dispatch('commonInfo/addModuleCommons', this.modulesForSelect)
 
         },
         deleteRecord(record){
@@ -285,7 +290,6 @@ export default {
                     this.clearRecord()
             }
         }
-
     }
 }
 </script>

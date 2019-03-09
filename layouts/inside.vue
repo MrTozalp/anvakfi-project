@@ -14,12 +14,8 @@
       ></v-progress-circular>
     </v-container>
     <template v-else>
-
-
     <v-content >
       <v-container fluid grid-list-xl  >
-        
-
           <router-view >
             <nuxt />
           </router-view>
@@ -37,20 +33,29 @@
 <script>
 import InsideHeader from '@/components/inside/InsideHeader.vue'
 import Breadcrumb from '@/components/Breadcrumb'
-import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('dataAction')
+
 export default {
-  
   components: {
     InsideHeader,
     Breadcrumb
   },
   computed: {
-      ...mapGetters([ 'loading', 'error'])
+    ...mapState({
+      loading : state => state.loading, 
+      error   : state => state.error
+    })
   },
   created(){
-    this.$store.dispatch("loadMembers");
-    this.$store.dispatch("loadBranches");
-    this.$store.dispatch("loadCommonList");
+    console.log('data loaded started')
+    this.$store.dispatch("member/loadMembers");
+    this.$store.dispatch("branch/loadBranches");
+    this.$store.dispatch("group/loadGroups");
+    this.$store.dispatch("commonInfo/loadCommonList");
+    this.$store.dispatch("commonInfo/loadCommonValues");
+    console.log('data loaded ended')
+      
     //this.$store.dispatch("loadModuleCommons");
   }
 }

@@ -18,7 +18,7 @@
 import Table from '@/components/inside/table/Table'
 export default {
   layout: 'inside',
-  middleware: ["check-auth", "auth","common"],
+  middleware: [ 'check-auth','auth','common'],
     components: {
     Table
   },
@@ -59,13 +59,12 @@ export default {
   },
   computed: {
     loadedBranches() {
-      return this.$store.getters.loadedBranches
+      return this.$store.state.branch.branches
     }
   },
   methods: {
       onDeleted(branchItem) {
-          console.log(branchItem)
-          this.$store.dispatch("deleteBranch", branchItem)
+          this.$store.dispatch("branch/deleteBranch", branchItem)
       }
   },
 }

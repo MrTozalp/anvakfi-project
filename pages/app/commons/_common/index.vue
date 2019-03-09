@@ -11,7 +11,6 @@ import VWidget from '@/components/VWidget'
 import FileImport from '@/components/inside/form/FileImport'
 export default {
     layout: 'inside',
-    middleware: ["check-auth", "auth"],
     components: {
       FileImport,
       VWidget

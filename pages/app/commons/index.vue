@@ -10,8 +10,23 @@
                     slot="widget-content"
                     label="Lütfen bir seçim yapınız"
                     single-line
+                    return-object
                     solo
                 ></v-select>
+                <v-select
+                    v-if="selectedCommonParentItems.length > 0"
+                    v-model="selectedCommonItem"
+                    :items="selectedCommonParentItems"
+                    prepend-inner-icon="map"
+                    slot="widget-content"
+                    label="Lütfen bir seçim yapınız"
+                    item-text="name"
+                    item-value="id"
+                    single-line
+                    return-object
+                    solo
+                ></v-select>
+
                 <v-alert
                     :value="!selectedCommon"
                     type="info"
@@ -24,9 +39,9 @@
                     slot="widget-content"
                     @importClick="onImportClicked"
                     @edit="onEdited"
-                    @delete="onDeleted"  
+                    @delete="onDeleted"
                     @newRecord="onNewRecord"
-                    :records="selectedCommonItemList"/>
+                    :records="selectedCommonItems"/>
                 </v-widget>
 
         </v-flex>
@@ -35,20 +50,22 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import VWidget from '@/components/VWidget'
 import SelectableTable from '@/components/inside/table/SelectableTable'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('commonInfo')
 export default {
     layout: 'inside',
-    middleware: ["check-auth", "auth","common"],
+    middleware: [ 'check-auth','auth','common'],
     components: {
         VWidget,
         SelectableTable
     },
-        data () {
+    data () {
         return {
             valid: true,
             selectedCommonItems: [],
+            selectedCommonParentItems: [],
             search : '',
             rules: {
                 required: (value) => !!value || 'Zorunlu'
@@ -61,40 +78,58 @@ export default {
             this.$router.push(currentPath+'/'+this.selectedCommon)
         },
         onNewRecord(commonRecord) {
-            const newRecord = {...commonRecord, value: this.selectedCommon}
-            this.$store.dispatch("addCommonItem", newRecord)
+            let newRecord = {...commonRecord, value: this.selectedCommon.value}
+            if(this.selectedCommonItem !== null && this.selectedCommonItem.id !== null)
+                newRecord = { ...newRecord, parent: this.selectedCommonItem.id }
+
+            
+            this.$store.dispatch("commonInfo/addCommonItem", newRecord)
+                .then(data => {
+                        this.selectedCommonItems = this.$store.getters['commonInfo/selectedCommonList']
+                    }
+                )
         },
         onEdited(record) {
-            this.$store.dispatch("editCommonItem", record)
+            this.$store.dispatch("commonInfo/editCommonItem", record)
         },
         onDeleted(commonRecord) {
-            this.$store.dispatch("deleteCommonItem", commonRecord)
+            this.$store.dispatch("commonInfo/deleteCommonItem", commonRecord)
         }
     },
     computed: {
-        ...mapGetters([ 'commonValues']),
-        selectedCommonItemList(){
-            let commonItems =  []
-            if(this.selectedCommon)
-                Object.assign(commonItems,this.$store.getters.selectedCommonList(this.selectedCommon))
-            return commonItems
-        },
+        ...mapState({
+            commonValues : state => state.commonValues
+        }),
         selectedCommon : {
             get: function() {
-                return this.$store.getters.selectedCommon
+                return this.$store.getters['commonInfo/selectedCommon']
             },
             set: function(newValue) {
-                this.$store.commit('setSelectedCommon',newValue)
+                this.$store.commit('commonInfo/SET_SELECTED_COMMON',newValue)
+            }
+        },
+        selectedCommonItem : {
+            get: function() {
+                return this.$store.getters['commonInfo/selectedCommonItem']
+            },
+            set: function(newValue) {
+                this.$store.commit('commonInfo/SET_SELECTED_COMMON_ITEM',newValue)
             }
         }
     },
     watch: {
         selectedCommon(val){
             if(val){
-                Object.assign(this.selectedCommonItems,this.$store.getters.selectedCommonList(val))
+                this.selectedCommonItems = this.$store.getters['commonInfo/selectedCommonList']
+                this.selectedCommonParentItems = this.$store.getters['commonInfo/selectedCommonParentList']
             }
-                 
+        },
+        selectedCommonItem(val){
+            if(val)
+                this.selectedCommonItems = this.$store.getters['commonInfo/selectedCommonList']
+            
         }
+
     }
     
 }

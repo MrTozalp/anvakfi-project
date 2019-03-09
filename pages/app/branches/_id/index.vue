@@ -28,7 +28,7 @@ export default {
     },
     methods: {
         onSubmitted(loadedBranch) {
-            this.$store.dispatch("editBranch", loadedBranch).then(() => {
+            this.$store.dispatch("branch/editBranch", loadedBranch).then(() => {
                 this.$router.push("/app/branches");
             });
         }

@@ -92,7 +92,7 @@ import menu from '@/static/menu'
     },
     methods: {
       onLogout() {
-        this.$store.dispatch("logout");
+        this.$store.dispatch("authentication/logout");
         this.$router.push("/");
         
       }

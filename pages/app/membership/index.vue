@@ -20,7 +20,7 @@ import Table from '@/components/inside/table/Table'
 
 export default {
   layout: 'inside',
-  middleware: ["check-auth", "auth","common"],
+  middleware: [ 'check-auth','auth','common'],
   components: {
       Table
   },
@@ -36,6 +36,10 @@ export default {
           {
             text: 'Ad Soyad',
             value: 'fullname'
+          },
+          {
+            text: 'Gruplar',
+            value: 'groupNames'
           },
           {
             text: 'Meslek',
@@ -66,14 +70,14 @@ export default {
   },
   computed: {
     loadedMembers() {
-      return this.$store.getters.loadedMembers
+      return this.$store.state.member.members
     }
   },
   methods: {
       onDeleted(memberToDelete) {
           console.log(memberToDelete)
-          this.$store.dispatch("deleteMember", memberToDelete)
+          this.$store.dispatch("member/deleteMember", memberToDelete)
       }
-  },
-};
+  }
+}
 </script>

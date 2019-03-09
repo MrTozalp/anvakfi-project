@@ -48,8 +48,10 @@
 <script>
 import Instutition from '@/components/Instutition.vue'
 import Logo from '@/components/Logo.vue'
-import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('dataAction')
 export default {
+  
   components: {
     Instutition,
     Logo
@@ -79,11 +81,14 @@ export default {
       }
   },
   computed: {
-    ...mapGetters([ 'loading', 'error'])
+    ...mapState({
+        loading : state => state.loading, 
+        error   : state => state.error
+      })
   },
   methods: {
     onSignin () {
-      this.$store.dispatch("authenticateUser", {
+      this.$store.dispatch('authentication/authenticateUser', {
         email: this.email,
         password: this.password
       }).then(() => {
@@ -91,7 +96,7 @@ export default {
       });
     },
     onDismissed () {
-      this.$store.dispatch('clearError')
+      this.$store.dispatch('authentication/clearError')
     }
   }
 }

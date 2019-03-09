@@ -14,7 +14,7 @@ export default {
     },
     methods: {
         onSubmitted(memberRecord) {
-            this.$store.dispatch("addMember", memberRecord).then(() => {
+            this.$store.dispatch("member/addMember", memberRecord).then(() => {
                 this.$router.push("/app/membership")
             });
         }

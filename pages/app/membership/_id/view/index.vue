@@ -1,7 +1,7 @@
 <template>
     <member-form 
-        :loadedMember="loadedMember" 
-        @submit="onSubmitted"/>
+        isView
+        :loadedMember="loadedMember" />
 </template>
             
 
@@ -16,13 +16,7 @@ export default {
         loadedMember () {
             return this.$store.getters['member/getMemberById'](this.$route.params.id)
         }
-    },
-    methods: {
-        onSubmitted(loadedMember) {
-            this.$store.dispatch("member/editMember", loadedMember).then(() => {
-                this.$router.push("/app/membership");
-            });
-        }
     }
+
 }
 </script>

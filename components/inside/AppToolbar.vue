@@ -109,8 +109,8 @@ export default {
       Util.toggleFullScreen();
     },
     onLogout() {
-      this.$store.dispatch("logout");
-      this.$router.push("/auth");
+      this.$store.dispatch("authentication/logout");
+      this.$router.push("/");
     }
   }
 };

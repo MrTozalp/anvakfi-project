@@ -82,6 +82,13 @@
                         }   | column
                     }}
                     </td>
+
+                    <v-btn depressed outline icon fab dark 
+                        color="primary" small
+                        @click="viewItem(props.item.id)"
+                        >
+                        <v-icon nuxt >search</v-icon>
+                    </v-btn>
                 
                     <v-btn depressed outline icon fab dark 
                         color="primary" small
@@ -170,9 +177,13 @@ export default {
                 this.$filters.phone(col)
             return col
         },
+        viewItem(uuid){
+            const currentPath = this.$route.path
+            this.$router.push(currentPath+'/'+ uuid+'/view')
+        },
         editItem (uuid) {
             const currentPath = this.$route.path
-            this.$router.push(currentPath+'/'+uuid)
+            this.$router.push(currentPath+'/'+ uuid)
         },
         deleteRecord(item){
             this.$emit('delete', item)

@@ -7,13 +7,15 @@
           <v-widget :title="member ? 'Yeni Üye'  : 'Üye Güncelle'" backTo="/app/membership" >
             <div slot="widget-content">
                 
-                    <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
+            <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
                     <v-container fluid>
                         <v-layout row wrap>
-                        
+
                         <FormInput >
                             <v-text-field slot="form-field"
                                 v-model="member.fullname"
+                                :readonly="isView"
+                                
                                 label="Ad Soyad"    
                                 :rules="[rules.required]"
                             ></v-text-field>
@@ -23,23 +25,43 @@
                             <v-text-field slot="form-field"
                                 v-model="member.identityNumber"
                                 mask="###########"
+                                :readonly="isView"
+                                
                                 counter                            
                                 maxlength="11"
                                 minlength="11"
                                 label="Kimlik No"
                             ></v-text-field>
+                        </FormInput>
 
+                        <FormInput v-if="groupList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="member.groups"
+                                :items="groupList"
+                                :readonly="isView"
+                                :clearable="!isView"
+                                item-text="groupName"
+                                item-value="id"
+                                label="Gruplar"
+                                multiple
+                                hide-selected
+                                deletable-chips
+                            >
+                            </v-autocomplete>
                         </FormInput>
 
                         <FormInput v-if="genderList.length > 0">
                             <v-autocomplete
                                 slot="form-field"
                                 v-model="member.gender"
+                                :readonly="isView"
+                                
+                                :clearable="!isView"
                                 :items="genderList"
                                 item-text="name"
                                 item-value="id"
                                 label="Cinsiyet"
-                                clearable
                             >
                             </v-autocomplete>
                         </FormInput>
@@ -47,17 +69,21 @@
                             <v-autocomplete
                                 slot="form-field"
                                 v-model="member.occupation"
+                                :readonly="isView"
+                                
+                                :clearable="!isView"
                                 :items="occupationList"
                                 item-text="name"
                                 item-value="id"
                                 label="Meslek"
-                                clearable
                             >
                             </v-autocomplete>
                         </FormInput>
                         <FormInput>
                             <v-text-field slot="form-field"
                                 v-model="member.email"
+                                :readonly="isView"
+                                
                                 label="Email" 
                                 :rules="[rules.email]" 
                             ></v-text-field>
@@ -65,6 +91,8 @@
                         <FormInput>
                             <v-text-field slot="form-field"
                                 v-model="member.mobilePhone"
+                                :readonly="isView"
+                                
                                 label="Cep Telefonu"
                                 mask="(###) ### - ####"
                                 :rules="[rules.required,rules.uniquePhone]"
@@ -73,6 +101,8 @@
                         <FormInput>
                             <v-text-field slot="form-field"
                                 v-model="member.homePhone"
+                                :readonly="isView"
+                                
                                 label="Ev Telefonu"
                                 mask="(###) ### - ####"
                             ></v-text-field>
@@ -81,6 +111,8 @@
                         <FormInput>
                             <v-text-field slot="form-field"
                                 v-model="member.workPhone"
+                                :readonly="isView"
+                                
                                 label="İş Telefonu"
                                 mask="(###) ### - ####"
                             ></v-text-field>
@@ -89,6 +121,9 @@
                             <v-autocomplete
                                 slot="form-field"
                                 v-model="member.hometown"
+                                :readonly="isView"
+                                
+                                :clearable="!isView"
                                 :items="hometownList"
                                 item-text="name"
                                 item-value="id"
@@ -101,7 +136,9 @@
 
                          <v-radio-group 
                             label="Etiket Adresi Seçimi" 
-                            slot="form-field" 
+                            slot="form-field"
+                            :readonly="isView"
+                            
                             :rules="[rules.required]"
                             row 
                             v-model="member.addressChoice">
@@ -121,6 +158,9 @@
                             <v-autocomplete
                                 slot="form-field"
                                 v-model="member.branch"
+                                :readonly="isView"
+                                
+                                :clearable="!isView"
                                 :items="branchList"
                                 item-text="branchName"
                                 item-value="id"
@@ -128,8 +168,40 @@
                             >
                             </v-autocomplete>
                         </FormInput>
+                        <FormInput v-if="provinceList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                :readonly="isView"
+                                
+                                :clearable="!isView"
+                                v-model="member.province"
+                                :items="provinceList"
+                                item-text="name"
+                                item-value="id"
+                                label="İl"
+                                
+                            >
+                            </v-autocomplete>
+                        </FormInput>
+                        <FormInput v-if="provinceList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                :readonly="isView"
+                                
+                                :clearable="!isView"
+                                v-model="member.district"
+                                :items="districtList"
+                                item-text="name"
+                                item-value="id"
+                                label="İlçe"
+                                no-data-text="İle Göre İlçe Bulunmamaktadır"
+                            >
+                            </v-autocomplete>
+                        </FormInput>
                         <FormInput>
                             <v-textarea slot="form-field"
+                                :readonly="isView"
+                                
                                 v-model="member.homeAddress"
                                 label="Ev Adresi" 
                             ></v-textarea>
@@ -137,6 +209,8 @@
                         </FormInput>
                         <FormInput>
                             <v-textarea slot="form-field"
+                                :readonly="isView"
+                                
                                 v-model="member.workAddress"
                                 label="İş Adresi" 
                             ></v-textarea>
@@ -145,7 +219,7 @@
                     
                         <v-flex xs4>
                         </v-flex>
-                        <v-flex xs8>
+                        <v-flex xs8 v-if="!isView">
                             <form-button 
                                type="submit"
                                 color="primary">
@@ -170,7 +244,7 @@
             
 
 <script>
-import customValidate from '@/mixins/customValidate'
+
 import VWidget from '@/components/VWidget'
 import FormInput from '@/components/inside/form/FormInput'
 import FormButton from '@/components/inside/form/FormButton'
@@ -182,25 +256,29 @@ export default {
         FormButton
     },
     props:{
+        isView: {
+            type: Boolean
+        },
         loadedMember: {
             type: Object,
             required: false
         }
     },
-    mixins: [customValidate],
     data () {
         return {
             valid: true,
-            modelList : this.$store.getters['loadedMembers'],
             member:  this.loadedMember
             ? { ...this.loadedMember }
             : {
                 fullname: "",
                 email: "",
                 identityNumber: "",
+                groups: [],
                 mobilePhone: "",
                 homePhone: "",
                 workPhone: "",
+                province: "",
+                district: "",
                 homeAddress: "",
                 workAddress: "",
                 addressChoice: "",
@@ -214,7 +292,7 @@ export default {
                 email: (v) =>  v ? /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Geçersiz email' : true,
                 uniquePhone: (value) => {
                     if(value != '0000000000' ){
-                        return  !this.modelList.some(el =>  ( el.mobilePhone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.' 
+                        return  !this.memberList.some(el =>  ( el.mobilePhone === value && el.id !== this.member.id) )   || 'Bu telefon numarası ile kayıt bulunmaktadır. Lütfen başka bir numara giriniz.' 
                     }
                     else return true
                 }
@@ -222,25 +300,31 @@ export default {
         }
     },
     computed: {
+        memberList(){
+            return this.$store.getters['member/loadedMembers']
+        },
+        groupList(){
+            return this.$store.state.group.groups
+        },
         branchList() {
-            return this.$store.getters.loadedBranches
+            return this.$store.state.branch.branches
         },
         genderList() {
-            return this.$store.getters.selectedCommonList('gender')
+            return this.$store.getters['commonInfo/getCommonByValue']('gender')
         },
         occupationList() {
-            return this.$store.getters.selectedCommonList('occupation')
+            return this.$store.getters['commonInfo/getCommonByValue']('occupation')
         },
         hometownList() {
-            return this.$store.getters.selectedCommonList('hometown')
+            return this.$store.getters['commonInfo/getCommonByValue']('hometown')
         },
-        commonItemList(){
-            let itemList = []
-            const memberCommons = this.$store.getters.moduleCommonsByModuleName("member")
-            memberCommons.forEach(item => {
-                itemList.push(item.commonItem)
-            })
-            return itemList
+        provinceList() {
+            return this.$store.getters['commonInfo/getCommonByValue']('province')
+        },
+        districtList() {
+            return this.member.province ? 
+                 this.$store.getters['commonInfo/getCommonByParent'](this.member.province) : []
+
         }
     },
     methods: {

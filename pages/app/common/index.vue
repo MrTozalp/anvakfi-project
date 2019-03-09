@@ -48,7 +48,6 @@ import VWidget from '@/components/VWidget'
 import SelectableTable from '@/components/inside/table/SelectableTable'
 export default {
     layout: 'inside',
-    middleware: ["check-auth", "auth"],
     components: {
         VWidget,
         SelectableTable

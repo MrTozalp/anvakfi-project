@@ -6,10 +6,9 @@
             <v-card-title v-show="headline" class="headline">{{headline}}</v-card-title>
             <v-card-text>{{ content }}</v-card-text>
             <v-card-text>
-            <v-form ref="form" v-model="valid" lazy-validation>
-                <slot name="form"></slot>
-            </v-form>
-
+                <v-form ref="form" v-model="valid" lazy-validation>
+                    <slot name="form"></slot>
+                </v-form>
             </v-card-text>
 
             <v-card-actions>
