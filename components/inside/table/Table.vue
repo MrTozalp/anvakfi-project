@@ -1,8 +1,7 @@
 <template>
     <div>
         <TblToolbar :moreAction="toolbarConfig.moreAction">
-            <v-text-field
-                
+            <v-text-field 
                 hide-details
                 v-model="search"
                 slot="searchField"
@@ -41,13 +40,12 @@
             </v-list>
         </TblToolbar>
 
-
         <v-data-table
             :headers="tableConfig.headers"
             :search="search"
             :items="filteredRecords"
             :rows-per-page-items="tableConfig.rows_per_page_items"
-            class="elevation-1"
+            class="elevation-0"
             select-all
             v-model="selected"
             item-key="id"

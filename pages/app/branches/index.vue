@@ -1,26 +1,30 @@
 <template>
   <v-layout row wrap class="pa-1">
         <v-flex lg12>
-          <v-card > 
-            <v-divider></v-divider>
-            <Table
-            @delete="onDeleted"   
-            :tableConfig="tableConfig" 
-            :toolbarConfig="toolbarConfig"
-            :records="loadedBranches"/>
-          </v-card>
+
+          <v-divider></v-divider>
+          <v-widget title="Şubeler">
+          <Table
+          slot="widget-content"
+          @delete="onDeleted"   
+          :tableConfig="tableConfig" 
+          :toolbarConfig="toolbarConfig"
+          :records="loadedBranches"/>
+          </v-widget>
         </v-flex>  
   </v-layout>
 </template>
 
 
 <script>
+import VWidget from '@/components/VWidget'
 import Table from '@/components/inside/table/Table'
 export default {
   layout: 'inside',
   middleware: [ 'check-auth','auth','common'],
     components: {
-    Table
+      VWidget,
+      Table
   },
     data () {
     return {
