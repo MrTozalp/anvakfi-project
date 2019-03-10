@@ -21,7 +21,7 @@
                     v-if="filters.hasOwnProperty(header.value)"
                     v-model="filters[header.value]"
                     :items="columnValueList(header.value)" 
-                    chips
+                    small-chips
                     hide-details
                     deletable-chips
                     multiple>
@@ -211,7 +211,8 @@ export default {
         },
 
         columnValueList(val) {
-            return this.records.map(d => d[val])
+            
+            return this.records.filter( d => d[val] ).map(d => d[val])
         },
 
         exportToExcel(){
