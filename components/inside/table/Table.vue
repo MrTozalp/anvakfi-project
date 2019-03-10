@@ -246,37 +246,62 @@ export default {
             XLSX.writeFile(wb, 'üye listesi.xlsx')
         },
         exportToWord(){
-            var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            let header = "<!DOCTYPE html xmlns:o='urn:schemas-microsoft-com:office:office' "+
             "xmlns:w='urn:schemas-microsoft-com:office:word' "+
             "xmlns='http://www.w3.org/TR/REC-html40'>"+
-            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title>"+
+            "<style>"+
+            "table {  font-family: arial, sans-serif;  border-collapse: collapse;  width: 100%;} "+
+            " td {  border: 1px solid #dddddd;  text-align: left;  padding: 20px;  width: 33%;} "+
+            " tr:nth-child(even) {background-color: #dddddd;width: 100%;} "+
+            "</style></head>"+
             "<body >";
-            var context     = "<table  ><tr>"
-            var colNum = 0;
+            let context     = "<table  ><tr>"
+            let colNum = 0;
+            let address = ""
             this.selected.forEach(item => {
                 
-                if(item.address){
+                if(item.addressChoice){
+                    console.log(item.addressChoice)
+                    if(item.addressChoice == 0) address = address + item.homeAddress
+                    else if(item.addressChoice == 1) address = address + item.workAddress
+
+                    if(item.districtname  && item.provinceName) {
+                        address = address + " " + item.districtname + "/" + item.provinceName
+                    }
+                    //console.log(item.homeAddress)
+                    //console.log(item.districtname)
+                    //console.log(item.provinceName)
+                    
                     if(colNum === 3){
                         context      = context + "</tr><tr>"
                         colNum = 0;
 
                     }
-                        console.log(colNum)
-                        console.log(context)
-                    context = context + "<td>"+item.address+"</td>"
+                    //console.log(address)
+                    context = context + "<td>"+address+"</td>"
+                    colNum = colNum + 1;
+                    //console.log(colNum)
+                    console.log(context)
+                }
+            });
+            if(colNum < 3 ){
+                while(colNum !== 3 ){
+                    context = context + "<td></td>"
                     colNum = colNum + 1;
                 }
-            });                    
+            }         
             context      = context + "</tr></table>"
 
-            var footer = "</body></html>";
-            var sourceHTML = header+context+footer;
-            
-            var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
-            var fileDownload = document.createElement("a");
+            let footer = "</body></html>";
+            let sourceHTML = header+context+footer;
+
+            console.log(sourceHTML)
+            let source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+            let fileDownload = document.createElement("a");
             document.body.appendChild(fileDownload);
             fileDownload.href = source;
-            fileDownload.download = 'document.doc';
+            fileDownload.download = 'adres-etiketleri.doc';
             fileDownload.click();
             document.body.removeChild(fileDownload);
         }
