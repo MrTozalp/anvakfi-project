@@ -4,7 +4,7 @@
     
       <v-layout>
         <v-flex lg12 sm6 >
-          <v-widget :title="member ? 'Yeni Üye'  : 'Üye Güncelle'" backTo="/app/membership" >
+          <v-widget :title="member ? 'Yeni Üye'  : 'Üye Güncelle'" back>
             <div slot="widget-content">
                 
             <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>
@@ -39,13 +39,13 @@
                                 slot="form-field"
                                 v-model="member.groups"
                                 :items="groupList"
-                                :readonly="isView"
-                                :clearable="!isView"
+                                :readonly="isView" 
                                 item-text="groupName"
                                 item-value="id"
                                 label="Gruplar"
                                 multiple
                                 hide-selected
+                                small-chips
                                 deletable-chips
                             >
                             </v-autocomplete>
@@ -301,7 +301,8 @@ export default {
     },
     computed: {
         memberList(){
-            return this.$store.getters['member/loadedMembers']
+            console.log(this.$route.query)
+            return this.$store.state.member.members
         },
         groupList(){
             return this.$store.state.group.groups

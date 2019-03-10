@@ -4,7 +4,7 @@
     
       <v-layout>
         <v-flex lg12 sm6>
-          <v-widget :title="branch ? 'Yeni Şube'  : 'Şube Güncelle'" backTo="/app/branches" >
+          <v-widget :title="branch ? 'Yeni Şube'  : 'Şube Güncelle'" back >
             <div slot="widget-content">
                 
                     <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>

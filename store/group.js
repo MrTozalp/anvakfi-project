@@ -19,6 +19,13 @@ export const getters = {
                 groupNames += ', '
         }
         return groupNames
+    },
+    isBlackListGroup: state => groups=> {
+        for(const key in groups){
+            const groupItem = state.groups.find(group => group.id === groups[key])
+            if(groupItem.isBlackList) return true
+        }
+        return false
     }
 }
 

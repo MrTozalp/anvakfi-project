@@ -1,7 +1,7 @@
 <template>
     <v-layout>
         <v-flex lg12 sm6 >
-          <v-widget :title="group ? 'Yeni Grup'  : 'Grup Güncelle'" backTo="/app/groups" >
+          <v-widget :title="group ? 'Yeni Grup'  : 'Grup Güncelle'" back >
             <div slot="widget-content">
 
             <v-form ref="form" v-model="valid" @submit.prevent="onSave" lazy-validation>

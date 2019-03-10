@@ -2,12 +2,12 @@
   <div  id="v-widget">
     <v-card >
       <v-layout v-if="logo" pa-2 align-center justify-center>
-              <img  width="350" src="~/assets/images/bzm-flat.png">
+          <img  width="350" src="~/assets/images/bzm-flat.png">
       </v-layout>
 
       <v-toolbar color="transparent" 
         flat dense card >
-        <v-btn v-if="backTo" nuxt :to="backTo" exact icon class="hidden-xs-only">
+        <v-btn v-if="back" @click="$router.go(-1)" exact icon class="hidden-xs-only">
               <v-icon >arrow_back</v-icon>
         </v-btn>
       
@@ -24,7 +24,7 @@
         <slot name="widget-header-action"></slot>
       </v-toolbar>
       <v-divider ></v-divider>
-      <v-card-text    :class="contentBg">
+      <v-card-text :class="contentBg">
         <slot name="widget-content"></slot>       
       </v-card-text> 
            
@@ -39,8 +39,8 @@ export default {
     title: {
       type: String,
     },
-    backTo: {
-      type: String
+    back: {
+      type: Boolean
     },
     logo: {
       type: Boolean
@@ -61,10 +61,7 @@ export default {
   data () {
     return {
 
-    };
-  },
-  computed: {
-
-  },  
-};
+    }
+  }
+}
 </script>

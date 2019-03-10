@@ -1,6 +1,6 @@
 <template>
         
-            <v-widget :title="commonName + ' İçin Kayıt Yükle'" backTo="/app/commons" >
+            <v-widget :title="commonName + ' İçin Kayıt Yükle'" back >
                 <FileImport slot="widget-content"></FileImport>
             </v-widget>
    

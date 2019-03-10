@@ -10,7 +10,6 @@
               :records="loadedMembers"
               />
           </v-card>
-
         </v-flex>  
   </v-layout>
 </template>
@@ -70,7 +69,7 @@ export default {
   },
   computed: {
     loadedMembers() {
-      return this.$store.state.member.members
+      return this.$store.getters['member/getMemberList'](this.$route.query.black)
     }
   },
   methods: {

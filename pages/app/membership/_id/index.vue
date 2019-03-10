@@ -20,7 +20,7 @@ export default {
     methods: {
         onSubmitted(loadedMember) {
             this.$store.dispatch("member/editMember", loadedMember).then(() => {
-                this.$router.push("/app/membership");
+                this.$router.go(-1) 
             });
         }
     }

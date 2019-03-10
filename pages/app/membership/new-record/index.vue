@@ -1,8 +1,6 @@
 <template>
     <member-form  @submit="onSubmitted"/>
-
 </template>
-            
 
 <script>
 
@@ -15,7 +13,7 @@ export default {
     methods: {
         onSubmitted(memberRecord) {
             this.$store.dispatch("member/addMember", memberRecord).then(() => {
-                this.$router.push("/app/membership")
+                this.$router.go(-1) 
             });
         }
     }

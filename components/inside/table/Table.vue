@@ -178,12 +178,19 @@ export default {
             return col
         },
         viewItem(uuid){
-            const currentPath = this.$route.path
-            this.$router.push(currentPath+'/'+ uuid+'/view')
+            
+            const currenPathName = this.$route.name
+            const query = this.$route.query
+            //router.push({ name: 'user', params: { userId } }) // -> /user/123
+
+            this.$router.push({ name: currenPathName+'-id-view', params: { id: uuid }, query: query })
+            //const currentPath = this.$route.path
+            //this.$router.push(currentPath+'/'+ uuid+'/view')
         },
         editItem (uuid) {
-            const currentPath = this.$route.path
-            this.$router.push(currentPath+'/'+ uuid)
+            const currenPathName = this.$route.name
+            const query = this.$route.query
+            this.$router.push({ name: currenPathName+'-id', params: { id: uuid }, query })
         },
         deleteRecord(item){
             this.$emit('delete', item)

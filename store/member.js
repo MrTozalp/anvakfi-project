@@ -1,10 +1,21 @@
 export const namespaced = true
 
 export const state = () => ({
-    members: [],
+    members: []
 })
 
 export const getters = {
+    getMemberList: state => isBlack => {
+        console.log('get member list: '+isBlack)
+        return state.members.filter(member => {
+            if(isBlack && !member.isBlackListGroup)
+                return false
+            if(!isBlack && member.isBlackListGroup)
+                return false
+            return true
+            
+        })
+    },
     getMemberById: state => id => {
       return state.members.find(member => member.id === id)
     }
@@ -56,6 +67,7 @@ export const actions = {
         const memberHometown = rootState.commonInfo.commonList.find(element => element.id == member.hometown)
         const memberProvince = rootState.commonInfo.commonList.find(element => element.id == member.province)
         const memberDistrict = rootState.commonInfo.commonList.find(element => element.id == member.district)
+        const isBlackListGroup = rootGetters['group/isBlackListGroup'](member.groups)
         const groupNames = rootGetters['group/groupNamesOfGroups'](member.groups)
 
         const createdMember = {
@@ -67,6 +79,7 @@ export const actions = {
             provinceName: memberProvince ? memberProvince.name : '',
             districtname: memberDistrict ? memberDistrict.name : '',
             groupNames: groupNames ? groupNames : '',
+            isBlackListGroup: isBlackListGroup,
             createdDate: new Date()
         }
         return this.$axios
@@ -84,6 +97,7 @@ export const actions = {
         const memberHometown = rootState.commonInfo.commonList.find(element => element.id == member.hometown)
         const memberProvince = rootState.commonInfo.commonList.find(element => element.id == member.province)
         const memberDistrict = rootState.commonInfo.commonList.find(element => element.id == member.district)
+        const isBlackListGroup = rootGetters['group/isBlackListGroup'](member.groups)
         const groupNames = rootGetters['group/groupNamesOfGroups'](member.groups)
 
         const editedMember = {
@@ -95,6 +109,7 @@ export const actions = {
             provinceName: memberProvince ? memberProvince.name : '',
             districtname: memberDistrict ? memberDistrict.name : '',
             groupNames: groupNames ? groupNames : '',
+            isBlackListGroup: isBlackListGroup,
             updatedDate: new Date()
         }
         return this.$axios
