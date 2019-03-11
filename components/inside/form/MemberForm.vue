@@ -15,7 +15,6 @@
                             <v-text-field slot="form-field"
                                 v-model="member.fullname"
                                 :readonly="isView"
-                                
                                 label="Ad Soyad"    
                                 :rules="[rules.required]"
                             ></v-text-field>
@@ -26,7 +25,6 @@
                                 v-model="member.identityNumber"
                                 mask="###########"
                                 :readonly="isView"
-                                
                                 counter                            
                                 maxlength="11"
                                 minlength="11"
@@ -34,22 +32,6 @@
                             ></v-text-field>
                         </FormInput>
 
-                        <FormInput v-if="groupList.length > 0">
-                            <v-autocomplete
-                                slot="form-field"
-                                v-model="member.groups"
-                                :items="groupList"
-                                :readonly="isView" 
-                                item-text="groupName"
-                                item-value="id"
-                                label="Gruplar"
-                                multiple
-                                hide-selected
-                                small-chips
-                                deletable-chips
-                            >
-                            </v-autocomplete>
-                        </FormInput>
 
                         <FormInput v-if="genderList.length > 0">
                             <v-autocomplete
@@ -65,6 +47,31 @@
                             >
                             </v-autocomplete>
                         </FormInput>
+
+                        <FormInput >
+                            <v-text-field slot="form-field"
+                                v-model="member.bloodType"
+                                :readonly="isView"
+                                label="Kan Grubu"
+                                hint="A+, A-, AB+ vs."
+                            ></v-text-field>
+                        </FormInput>
+
+                        <FormInput >
+                            <v-text-field slot="form-field"
+                                v-model="member.title"
+                                :readonly="isView"
+                                label="Ünvan"
+                            ></v-text-field>
+                        </FormInput>
+
+                        <FormInput >
+                            <v-text-field slot="form-field"
+                                v-model="member.jobTitle"
+                                :readonly="isView"
+                                label="Mesleki Ünvan"
+                            ></v-text-field>
+                        </FormInput>
                         <FormInput v-if="occupationList.length > 0">
                             <v-autocomplete
                                 slot="form-field"
@@ -76,6 +83,40 @@
                                 item-text="name"
                                 item-value="id"
                                 label="Meslek"
+                            >
+                            </v-autocomplete>
+                        </FormInput>
+                        <FormInput >
+                            <v-text-field slot="form-field"
+                                v-model="member.workPlace"
+                                :readonly="isView"
+                                label="Çalıştığı Yer"
+                            ></v-text-field>
+                        </FormInput>
+
+                        <FormInput>
+                            <date-picker
+                                label="Doğum Tarihi"
+                                slot="form-field"
+                                v-model="member.birthDate">
+                            </date-picker>
+
+                        </FormInput>
+
+                        
+                        <FormInput v-if="groupList.length > 0">
+                            <v-autocomplete
+                                slot="form-field"
+                                v-model="member.groups"
+                                :items="groupList"
+                                :readonly="isView" 
+                                item-text="groupName"
+                                item-value="id"
+                                label="Gruplar"
+                                multiple
+                                hide-selected
+                                small-chips
+                                deletable-chips
                             >
                             </v-autocomplete>
                         </FormInput>
@@ -248,9 +289,10 @@
 import VWidget from '@/components/VWidget'
 import FormInput from '@/components/inside/form/FormInput'
 import FormButton from '@/components/inside/form/FormButton'
-
+import DatePicker from '@/components/inside/form/DatePicker'
 export default {
     components: {
+        DatePicker,
         VWidget,
         FormInput,
         FormButton
@@ -273,6 +315,11 @@ export default {
                 fullname: "",
                 email: "",
                 identityNumber: "",
+                birthDate: "",
+                bloodType: "",
+                title: "",
+                jobTitle: "",
+                workPlace: "",
                 groups: [],
                 mobilePhone: "",
                 homePhone: "",
@@ -326,11 +373,13 @@ export default {
             return this.member.province ? 
                  this.$store.getters['commonInfo/getCommonByParent'](this.member.province) : []
 
+        },
+        memberDate() {
+            return this.member.birthDate
         }
     },
     methods: {
         onSave() {
-
             if (this.$refs.form.validate())
                 this.$emit('submit', this.member)
 
@@ -339,6 +388,12 @@ export default {
         onCancel() {
         // Navigate back
             this.$router.push("/app/membership")
+        }
+    },
+    watch: {
+        memberDate(val) {
+            if(val)
+                console.log("birth date : "+val)
         }
     }
 }

@@ -39,7 +39,7 @@ module.exports = {
     '@/plugins/vuetify',
     '@/plugins/core-components.js',
     '@/plugins/error-filter.js',
-    '@/plugins/vee-validate',
+    '@/plugins/vee-validate'
   ],
 
   /*
