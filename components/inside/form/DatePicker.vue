@@ -14,18 +14,18 @@
     <template v-slot:activator="{ on }">
       <v-text-field
         :label="label"
-        hint="GG-AA-YYYY"
+        hint="GG/AA/YYYY"
         v-model="dateFormatted"
         persistent-hint
         prepend-icon="event"
+        @blur="date = parseDate(dateFormatted)"
         v-on="on"
+        readonly
       ></v-text-field>
     </template>
     <v-date-picker v-model="date"
       no-title locale="tr-tr"
-      @blur="date = parseDate(dateFormatted)"
-      @input="menu1 = false" 
-      scrollable></v-date-picker>
+      @input="menu1 = false" ></v-date-picker>
   </v-menu>
 </template>
 
@@ -43,8 +43,10 @@
 
     watch: {
       date(val){
-        this.dateFormatted = this.formatDate(this.date)
-        this.$emit('input', this.dateFormatted);
+
+        this.dateFormatted = this.formatDate(val)
+        this.$emit('input', this.dateFormatted)
+
       }
     },
 
@@ -58,7 +60,7 @@
       parseDate (date) {
         if (!date) return null
 
-        const [month, day, year] = date.split('/')
+        const [day, month, year] = date.split('/')
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       }
     }
