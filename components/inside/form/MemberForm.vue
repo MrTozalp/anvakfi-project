@@ -32,6 +32,14 @@
                             ></v-text-field>
                         </FormInput>
 
+                        <FormInput>
+                            <v-text-field slot="form-field"
+                                v-model="member.reference"
+                                :readonly="isView"
+                                label="Referans"
+                            ></v-text-field>
+                        </FormInput>
+
 
                         <FormInput v-if="genderList.length > 0">
                             <v-autocomplete
@@ -228,7 +236,6 @@
                             <v-autocomplete
                                 slot="form-field"
                                 :readonly="isView"
-                                
                                 :clearable="!isView"
                                 v-model="member.district"
                                 :items="districtList"
@@ -242,16 +249,13 @@
                         <FormInput>
                             <v-textarea slot="form-field"
                                 :readonly="isView"
-                                
                                 v-model="member.homeAddress"
                                 label="Ev Adresi" 
                             ></v-textarea>
-
                         </FormInput>
                         <FormInput>
                             <v-textarea slot="form-field"
                                 :readonly="isView"
-                                
                                 v-model="member.workAddress"
                                 label="İş Adresi" 
                             ></v-textarea>
@@ -290,6 +294,7 @@ import VWidget from '@/components/VWidget'
 import FormInput from '@/components/inside/form/FormInput'
 import FormButton from '@/components/inside/form/FormButton'
 import DatePicker from '@/components/inside/form/DatePicker'
+
 export default {
     components: {
         DatePicker,
@@ -315,6 +320,7 @@ export default {
                 fullname: "",
                 email: "",
                 identityNumber: "",
+                reference: "",
                 birthDate: "",
                 bloodType: "",
                 title: "",

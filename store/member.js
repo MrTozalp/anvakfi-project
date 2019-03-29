@@ -1,7 +1,8 @@
 export const namespaced = true
 
 export const state = () => ({
-    members: []
+    members: [],
+    memberProperties: []
 })
 
 export const getters = {
@@ -18,6 +19,11 @@ export const getters = {
     },
     getMemberById: state => id => {
       return state.members.find(member => member.id === id)
+    },
+    getMemberProperties: state => {
+        if(state.members.length > 0)
+            return Object.getOwnPropertyNames(state.members[0])
+        return null
     }
 }
 

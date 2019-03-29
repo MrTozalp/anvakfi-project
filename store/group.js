@@ -26,7 +26,11 @@ export const getters = {
             if(groupItem.isBlackList) return true
         }
         return false
-    }
+    },
+    getGroupByName (state) {
+        return (groupName) => state.groups.find(group => group.groupName === groupName )
+        
+    },
 }
 
 export const mutations = {

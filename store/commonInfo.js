@@ -15,6 +15,22 @@ export const getters = {
           })
         }
     },
+    getCommonByName (state) {
+        return (name) => {
+          return state.commonList.find((common) => {
+              
+            return common.name.toLocaleUpperCase('tr-TR') === name.toLocaleUpperCase('tr-TR')
+          })
+        }
+    },
+    getCommonByNameAndParent (state) {
+        return (item) => {
+          return state.commonList.find((common) => {
+              
+            return common.name.toLocaleUpperCase('tr-TR') === item.name.toLocaleUpperCase('tr-TR') && common.parent === item.parent
+          })
+        }
+    },
     getCommonByValue (state) {
         return (value) => {
           return state.commonList.filter((common) => {
@@ -27,6 +43,22 @@ export const getters = {
             return state.commonList.filter((common) => {
                 return common.parent === parentId
             })
+        }
+    },
+    isCommonValueExist (state) {
+        return(commonValue) => {
+            console.log('getCommonNameByValue '+ commonValue)
+            return state.commonValues.find((common) => {
+                return common.value === commonValue
+            })
+        }
+    },
+    getCommonNameByValue (state) {
+        return(commonValue) => {
+            console.log('getCommonNameByValue '+ commonValue)
+            return state.commonValues.find((common) => {
+                return common.value === commonValue
+            }).text
         }
     },
     selectedCommon(state){
@@ -79,6 +111,9 @@ export const mutations = {
     },
     ADD_COMMON_ITEM(state, newItem) {
         state.commonList.push(newItem)
+    },
+    ADD_COMMON_VALUE(state, newItem) {
+        state.commonValues.push(newItem)
     },
     SET_SELECTED_COMMON(state, common){
         state.selectedCommon = common
@@ -145,6 +180,7 @@ export const actions = {
         })
         .catch(e => console.log(e))
     },
+
     addCommonItems({commit, dispatch, rootGetters}, newExcelRecord) {
         dispatch('dataAction/setSuccess', false, { root: true })
         dispatch('dataAction/setBusy', true, { root: true })
@@ -154,6 +190,8 @@ export const actions = {
                 name : item[Object.keys(item)[0]],
                 value: newExcelRecord.value
             }
+
+            if(newExcelRecord.parent) newItem.parent = newExcelRecord.parent
 
             return this.$axios
             .$post(
@@ -176,10 +214,22 @@ export const actions = {
             
             })
     },
+    addCommonValue({commit, dispatch, rootGetters}, newItem) {
+        return this.$axios
+        .$post(
+            "https://anadolu-vakfi.firebaseio.com/commonValues.json?auth=" +rootGetters['authentication/token'], newItem)
+        .then(data => {
+            commit('ADD_COMMON_VALUE', {...newItem, id: data.name})
+
+        })
+        .catch(e => {
+            dispatch('dataAction/setError', e.response.data.error, { root: true })
+
+        });
+    },
     addCommonItem({commit, dispatch,rootGetters}, newItem) {
         dispatch('dataAction/setSuccess', false, { root: true })
         dispatch('dataAction/setBusy', true, { root: true })
-        console.log('token '+rootGetters['authentication/token'])
         return this.$axios
         .$post(
             "https://anadolu-vakfi.firebaseio.com/commonList.json?auth=" +rootGetters['authentication/token'], newItem)
@@ -190,6 +240,29 @@ export const actions = {
         })
         .catch(e => {
             dispatch('dataAction/setBusy', false, { root: true })
+            dispatch('dataAction/setError', e.response.data.error, { root: true })
+            dispatch('dataAction/setSuccess', false, { root: true })
+        });
+    },
+    addCommonItemWithParent({commit, dispatch,rootGetters}, newItems) {
+        const parentItem = newItems.parentRecord
+        return this.$axios
+        .$post(
+            "https://anadolu-vakfi.firebaseio.com/commonList.json?auth=" +rootGetters['authentication/token'], parentItem)
+        .then(data => {
+            const parentId  = data.name
+            newItems.map.set(parentItem.name, parentId)
+            commit('ADD_COMMON_ITEM', {...parentItem, id:  parentId})
+            if(newItems.childRecord !== 'undefined' && newItems.childRecord){
+                newItems.childRecord['parent'] = parentId
+                dispatch('addCommonItem', newItems.childRecord)
+
+            }
+                
+
+            dispatch('dataAction/setSuccess', true, { root: true })
+        })
+        .catch(e => {
             dispatch('dataAction/setError', e.response.data.error, { root: true })
             dispatch('dataAction/setSuccess', false, { root: true })
         });

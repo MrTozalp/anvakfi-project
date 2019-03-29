@@ -32,6 +32,14 @@
                 >
                 <v-icon>get_app</v-icon>
             </v-btn> 
+
+            <v-btn
+                @click="goToImport"
+                slot="toolbarAction"
+                icon small>
+                <v-icon >publish</v-icon>
+            </v-btn>
+
             <v-list slot="moreAction">
                 <v-list-tile >
                     <v-icon>get_app</v-icon>
@@ -155,7 +163,7 @@ export default {
         filteredRecords() {
             return this.records.filter(d => {
                 return Object.keys(this.filters).every(f => {
-                return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+                    return this.filters[f].length < 1 || this.filters[f].includes(d[f])
                 })
             })
         },
@@ -169,6 +177,10 @@ export default {
         }
     },
     methods: {
+        goToImport(){
+            const currenPathName = this.$route.name
+            this.$router.push({ name: currenPathName+'-import'})
+        },
         prepareColumn(item, header){
             let col = item[header.value]; 
             if( header.filter === 'phone' ) 
@@ -176,7 +188,6 @@ export default {
             return col
         },
         viewItem(uuid){
-            
             const currenPathName = this.$route.name
             const query = this.$route.query
             //router.push({ name: 'user', params: { userId } }) // -> /user/123

@@ -48,13 +48,13 @@ export default {
     })
   },
   created(){
-    console.log('data loaded started')
+    console.log('---data loading started---')
     this.$store.dispatch("member/loadMembers");
     this.$store.dispatch("branch/loadBranches");
     this.$store.dispatch("group/loadGroups");
     this.$store.dispatch("commonInfo/loadCommonList");
     this.$store.dispatch("commonInfo/loadCommonValues");
-    console.log('data loaded ended')
+    console.log('---data loading ended---')
       
     //this.$store.dispatch("loadModuleCommons");
   }

@@ -74,8 +74,12 @@ export default {
     },
     methods: {
         onImportClicked(){
-            const currentPath = this.$route.path
-            this.$router.push(currentPath+'/'+this.selectedCommon)
+            const currenPathName = this.$route.name
+            //const currentPath = this.$route.path
+            const param = this.selectedCommon.value
+            const query = this.selectedCommonItem ? {parent: this.selectedCommonItem.id} : {parent: false}
+            this.$router.push({ name: currenPathName+'-common', params: { common: param }, query: query })
+            //this.$router.push(currentPath+'/'+this.selectedCommon.value)
         },
         onNewRecord(commonRecord) {
             let newRecord = {...commonRecord, value: this.selectedCommon.value}

@@ -99,5 +99,5 @@ export const actions = {
     },
     clearSuccess ({commit}) {
         commit('CLEAR_SUCCESS')
-    },
+    }
   }

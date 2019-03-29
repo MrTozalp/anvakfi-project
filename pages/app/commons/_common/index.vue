@@ -11,14 +11,17 @@ import VWidget from '@/components/VWidget'
 import FileImport from '@/components/inside/form/FileImport'
 export default {
     layout: 'inside',
+    middleware: [ 'check-auth','auth','common'],
     components: {
       FileImport,
       VWidget
     },
     computed: {
         commonName(){
-            console.log("common param "+this.$store.getters.commonName(this.$route.params.common))
-            return (this.$store.getters.commonName(this.$route.params.common))
+            if(this.$route.query.parent)
+                return this.$store.getters['commonInfo/getCommonById'](this.$route.query.parent).name
+            else
+                return this.$store.getters['commonInfo/getCommonNameByValue'](this.$route.params.common)
         }
         
     }

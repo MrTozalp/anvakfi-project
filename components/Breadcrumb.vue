@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import menu from '@/static/menu';
+import menu from '@/static/menu'
 export default {
   data () {
     return {
