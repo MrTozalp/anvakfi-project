@@ -282,7 +282,7 @@ export default {
                     //console.log(item.districtname)
                     //console.log(item.provinceName)
                     
-                    if(colNum === 3){
+                    if(colNum === 2){
                         context      = context + "</tr><tr>"
                         colNum = 0;
 
@@ -294,8 +294,8 @@ export default {
                     console.log(context)
                 }
             });
-            if(colNum < 3 ){
-                while(colNum !== 3 ){
+            if(colNum < 2 ){
+                while(colNum !== 2 ){
                     context = context + "<td></td>"
                     colNum = colNum + 1;
                 }
