@@ -70,13 +70,13 @@
             </v-alert>
 
             <template slot="items" slot-scope="props">
-            <tr align="left">
+
                 
                 <td>
                     <v-checkbox
+                        v-model="props.selected"
                         primary
                         hide-details
-                        v-model="props.selected"
                     ></v-checkbox>
                 </td>
 
@@ -115,8 +115,6 @@
                             <v-icon>delete</v-icon>
                         </v-btn>
                     </dialog-button>
-                
-            </tr>
         </template>
         </v-data-table>
     </div>
@@ -269,9 +267,9 @@ export default {
             "<body >";
             let context     = "<table  ><tr>"
             let colNum = 0;
-            let address = ""
+            
             this.selected.forEach(item => {
-                
+                let address = "<i><b>Sayın "+item.fullname + "</b></i><br> "
                 if(item.addressChoice){
                     console.log(item.addressChoice)
                     if(item.addressChoice == 0) address = address + item.homeAddress
