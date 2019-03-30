@@ -110,20 +110,26 @@ export default {
                     }
                     else {
                         if(!isList){
-                            for(let attr of attrs) {
-                                if(newMemberRecord[attrKey] !== 'undefined' && newMemberRecord[attrKey] !== '' && newMemberRecord[attrKey])
-                                    newMemberRecord[attrKey] = newMemberRecord[attrKey]+' '+ticketItem[attr.text]
-                                else if(!newMemberRecord[attrKey] || newMemberRecord[attrKey] === 'undefined')
-                                    newMemberRecord[attrKey] = ticketItem[attr.text]
+                            if(attrKey.includes("Phone") && ticketItem[attrs[0].text].length !== 10){
+                                newMemberRecord[attrKey] = ""
                             }
+                            else{
+                                for(let attr of attrs) {
+                                    if(newMemberRecord[attrKey] !== 'undefined' && newMemberRecord[attrKey] !== '' && newMemberRecord[attrKey])
+                                        newMemberRecord[attrKey] = newMemberRecord[attrKey]+' '+ticketItem[attr.text]
+                                    else if(!newMemberRecord[attrKey] || newMemberRecord[attrKey] === 'undefined')
+                                        newMemberRecord[attrKey] = ticketItem[attr.text]
+                                }
+                            }
+
                         }
                         else if(!parent){
 
                             if(attrKey === 'addressChoice') {
                                 if(ticketItem[attrs[0].text] === 'ev')
-                                    newMemberRecord[attrKey] = 0
+                                    newMemberRecord[attrKey] = "0"
                                 else if(ticketItem[attrs[0].text] === 'is')
-                                    newMemberRecord[attrKey] = 1
+                                    newMemberRecord[attrKey] = "1"
                                 else newMemberRecord[attrKey] = null
                             }
                             else if(attrKey !== 'groups'){
