@@ -46,6 +46,10 @@ export const mutations = {
         );
         state.members.splice(memberIndex,1);
     }
+    ,
+    DELETE_ALL_MEMBERS(state) {
+        state.members = []
+    }
 }
 
 export const actions = {
@@ -65,6 +69,20 @@ export const actions = {
             .catch(e => {
                 context.error(e)
             });
+    },
+
+    addMemberItems({dispatch}, excelRecords){
+        dispatch('dataAction/setSuccess', false, { root: true })
+        dispatch('dataAction/setBusy', true, { root: true })
+        excelRecords.forEach( recordItem => {
+            dispatch('addMember', recordItem).then( ()=>{
+                if(excelRecords.length === index + 1){
+                    dispatch('dataAction/setSuccess', true, { root: true })
+                    dispatch('dataAction/setBusy', false, { root: true })
+                }
+            })
+        })
+
     },
     addMember({commit,rootState, rootGetters}, member) {
         const memberBranch = rootState.branch.branches.find(element => element.id == member.branch)
@@ -136,5 +154,12 @@ export const actions = {
             vuexContext.commit('DELETE_MEMBER', deletedMember)
         })
         .catch(e => console.log(e))
+    },
+    deleteAllMembers({commit,rootGetters}){
+        return this.$axios
+        .$delete("https://anadolu-vakfi.firebaseio.com/members.json?auth="+ rootGetters['authentication/token'])
+        .then(res => {
+            commit('DELETE_ALL_MEMBERS')
+        })
     }
 }

@@ -6,7 +6,8 @@
             <v-widget :title="$route.query.black ? 'Kara Liste'  : 'Üyeler'">
             <Table
               slot="widget-content"
-              @delete="onDeleted" 
+              @delete="onDeleted"
+              @deleteAll="onDeletedAll"
               :tableConfig="tableConfig" 
               :toolbarConfig="toolbarConfig"
               :records="loadedMembers"
@@ -33,10 +34,6 @@ export default {
       tableConfig: {
 
         headers: [
-          {
-            text: 'Şube',
-            value: 'branchName'
-          },
           {
             text: 'Ad Soyad',
             value: 'fullname'
@@ -81,6 +78,9 @@ export default {
       onDeleted(memberToDelete) {
           console.log(memberToDelete)
           this.$store.dispatch("member/deleteMember", memberToDelete)
+      },
+      onDeletedAll(){
+        this.$store.dispatch("member/deleteAllMembers")
       }
   }
 }

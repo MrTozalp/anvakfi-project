@@ -15,7 +15,6 @@
                 v-for="header in tableConfig.headers" 
                 :key="header.text" >
                 <v-select
-                    
                     label="Filtrele"
                     v-if="filters.hasOwnProperty(header.value)"
                     v-model="filters[header.value]"
@@ -40,10 +39,14 @@
                 <v-icon >publish</v-icon>
             </v-btn>
 
-            <v-list slot="moreAction">
-                <v-list-tile >
+            <v-list slot="moreAction" >
+                <v-list-tile @click="exportToWord">
                     <v-icon>get_app</v-icon>
-                    <v-list-tile-title @click="exportToWord">Adres Etiketi Al</v-list-tile-title>
+                    <v-list-tile-title >Adres Etiketi Al</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile @click="deleteAllRecords">
+                    <v-icon>delete</v-icon>
+                    <v-list-tile-title >Bütün Kayıtları Sil</v-list-tile-title>
                 </v-list-tile>
             </v-list>
         </TblToolbar>
@@ -135,7 +138,7 @@ export default {
                 sortBy: 'name'
             },
             filters: {
-                hometownName: [],
+                provinceName: [],
             },
         }
     },
@@ -175,6 +178,7 @@ export default {
         }
     },
     methods: {
+
         goToImport(){
             const currenPathName = this.$route.name
             this.$router.push({ name: currenPathName+'-import'})
@@ -202,6 +206,9 @@ export default {
         deleteRecord(item){
             this.$emit('delete', item)
             
+        },
+        deleteAllRecords(){
+            this.$emit('deleteAll')
         },
         toggleAll () {
             if (this.selected.length) this.selected = []

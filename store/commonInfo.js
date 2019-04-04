@@ -53,6 +53,13 @@ export const getters = {
             })
         }
     },
+    isCommonExist (state) {
+        return(commonName) => {
+            return state.commonList.find((common) => {
+                return common.name === commonName
+            })
+        }
+    },
     getCommonNameByValue (state) {
         return(commonValue) => {
             console.log('getCommonNameByValue '+ commonValue)
@@ -185,7 +192,6 @@ export const actions = {
         dispatch('dataAction/setSuccess', false, { root: true })
         dispatch('dataAction/setBusy', true, { root: true })
         newExcelRecord.itemList.forEach((item, index) => {
-            console.log("item: "+item[Object.keys(item)[0]])
             const newItem = {
                 name : item[Object.keys(item)[0]],
                 value: newExcelRecord.value

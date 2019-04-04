@@ -89,6 +89,7 @@ export default {
     },
     methods: {
         saveRecords(){
+            let ticketsToRecord = []; 
             this.tickets.forEach(ticketItem =>{
                 let newMemberRecord = {}
                 this.$store.getters['fileImport/getUnselectedModel'].forEach(modelItem =>{
@@ -133,23 +134,18 @@ export default {
                                 else newMemberRecord[attrKey] = null
                             }
                             else if(attrKey !== 'groups'){
-                                console.log('---commons---')
-                                console.log(ticketItem[attrs[0].text])
+
                                 const common = this.$store.getters['commonInfo/getCommonByName'](ticketItem[attrs[0].text])
                                 if(common) newMemberRecord[attrKey] = common.id
                                 else newMemberRecord[attrKey] = ""
                             }
                                 
                             else if(attrKey === 'groups'){
-                                console.log('---groups---')
-                                console.log(ticketItem[attrs[0].text].trim())
                                 let groups = (ticketItem[attrs[0].text].trim()).split(',')
                                 newMemberRecord[attrKey] = groups.map(group =>(this.$store.getters['group/getGroupByName'](group.trim()) ).id )
                             }
                         }
                         else if(parent){
-                            console.log('---common with parent---')
-                            console.log('parent: '+ticketItem[parent.attrs[0].text])
                             const parentItem = this.$store.getters['commonInfo/getCommonByName'](ticketItem[parent.attrs[0].text])
                             if(parentItem){
                                     const common = this.$store.getters['commonInfo/getCommonByNameAndParent']({
@@ -167,10 +163,13 @@ export default {
                     }
                 })
                 newMemberRecord["isBlackListGroup"] = false
-                console.log(newMemberRecord)
-                this.$store.dispatch('member/addMember', newMemberRecord)
+                ticketsToRecord.push(newMemberRecord)
+                //this.$store.dispatch('member/addMember', newMemberRecord)
             })
-            this.stepHolder = 4
+            this.$store.dispatch('member/addMemberItems', ticketsToRecord).then( data => {
+                this.stepHolder = 4
+            })
+            
         },
         loadHeadersForProps(){
             this.excelHeaders = this.$store.getters['fileImport/getUnselectedHeaders']
@@ -219,7 +218,8 @@ export default {
                             const groupValues = attrValue.split(",")
                             for (let group of groupValues) {
                                 let grpValue = group.trim()
-                                if(!this.attrExist(map, grpValue)){
+                                const groupExist = this.$store.getters['group/getGroupByName'](grpValue)
+                                if(!this.attrExist(map, grpValue) && !groupExist){
                                     this.$store.dispatch('group/addGroup', {groupName : grpValue , isBlackList: false})
                                     newRecord.children.push({ name: grpValue})
                                     
@@ -228,7 +228,8 @@ export default {
                         }
                     }
                     else if(!ignore && value !== 'addressChoice'){
-                        if(!this.attrExist(map, attrValue)){
+                        const commonExist = this.$store.getters['commonInfo/isCommonExist'](attrValue)
+                        if(!this.attrExist(map, attrValue) && !commonExist){
                             this.$store.dispatch('commonInfo/addCommonItem', { name : attrValue , value: value} )
                             
                             newRecord.children.push({ name: attrValue})
