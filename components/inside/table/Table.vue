@@ -33,6 +33,7 @@
             </v-btn> 
 
             <v-btn
+                v-if="false"
                 @click="goToImport"
                 slot="toolbarAction"
                 icon small>
@@ -44,7 +45,7 @@
                     <v-icon>get_app</v-icon>
                     <v-list-tile-title >Adres Etiketi Al</v-list-tile-title>
                 </v-list-tile>
-                <v-list-tile @click="deleteAllRecords">
+                <v-list-tile v-if="false" @click="deleteAllRecords">
                     <v-icon>delete</v-icon>
                     <v-list-tile-title >Bütün Kayıtları Sil</v-list-tile-title>
                 </v-list-tile>
