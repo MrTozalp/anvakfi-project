@@ -53,6 +53,7 @@ export default {
     this.$store.dispatch("branch/loadBranches");
     this.$store.dispatch("group/loadGroups");
     this.$store.dispatch("commonInfo/loadCommonList");
+    this.$store.dispatch("logActions/loadActionLog");
     this.$store.dispatch("commonInfo/loadCommonValues");
     console.log('---data loading ended---')
       

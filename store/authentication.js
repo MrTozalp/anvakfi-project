@@ -3,7 +3,8 @@ import Cookie from "js-cookie"
 export const namespaced = true
 
 export const state = () => ({
-    token: null
+    token: null,
+    userEmail: null
 })
 
 export const getters = {
@@ -17,10 +18,13 @@ export const getters = {
 
 export const mutations = {
     SET_TOKEN(state, token) {
-        state.token = token;
+      state.token = token;
+    },
+    SET_USER_EMAIL(state, userEmail){
+      state.userEmail = userEmail
     },
     CLEAR_TOKEN(state) {
-        state.token = null;
+      state.token = null;
     }
 }
 
@@ -41,7 +45,8 @@ export const actions = {
             
             dispatch('dataAction/setLoading', false,  { root: true })
             commit("SET_TOKEN", result.idToken)
-            
+            commit("SET_USER_EMAIL", authData.email)
+            localStorage.setItem("userEmail", authData.email)
             localStorage.setItem("token", result.idToken)
             localStorage.setItem(
               "tokenExpiration",
@@ -63,6 +68,7 @@ export const actions = {
     initAuth(vuexContext, req) {
         let token;
         let expirationDate;
+        let userEmail;
         console.log('init auth')
         if (req) {
           if (!req.headers.cookie) {
@@ -82,6 +88,8 @@ export const actions = {
         } else {
           token = localStorage.getItem("token");
           expirationDate = localStorage.getItem("tokenExpiration");
+          userEmail = localStorage.getItem("userEmail");
+          vuexContext.commit("SET_USER_EMAIL", userEmail)
         }
         if (new Date().getTime() > +expirationDate || !token) {
           console.log("No token or invalid token");
@@ -98,6 +106,7 @@ export const actions = {
         Cookie.remove("expirationDate");
         if (process.client) {
           localStorage.removeItem("token");
+          localStorage.removeItem("userEmail");
           localStorage.removeItem("tokenExpiration");
         }
       }

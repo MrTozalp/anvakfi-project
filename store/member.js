@@ -84,7 +84,7 @@ export const actions = {
         })
 
     },
-    addMember({commit,rootState, rootGetters}, member) {
+    addMember({commit,dispatch,rootState, rootGetters}, member) {
         const memberBranch = rootState.branch.branches.find(element => element.id == member.branch)
         const memberGender = rootState.commonInfo.commonList.find(element => element.id == member.gender)
         const memberOccupation = rootState.commonInfo.commonList.find(element => element.id == member.occupation)
@@ -111,10 +111,11 @@ export const actions = {
             "https://anadolu-vakfi.firebaseio.com/members.json?auth=" +rootGetters['authentication/token'], createdMember)
         .then(data => {
             commit('ADD_MEMBER', {...createdMember, id: data.name})
+            dispatch('logActions/addActionLog', {actionType: 'add', module: 'member'},{ root: true })
         })
         .catch(e => console.log(e));
     },
-    editMember({commit,rootState, rootGetters}, member) {
+    editMember({commit,dispatch,rootState, rootGetters}, member) {
         const memberBranch = rootState.branch.branches.find(element => element.id == member.branch)
         const memberGender = rootState.commonInfo.commonList.find(element => element.id == member.gender)
         const memberOccupation = rootState.commonInfo.commonList.find(element => element.id == member.occupation)
@@ -142,6 +143,7 @@ export const actions = {
         ".json?auth=" + rootGetters['authentication/token'], editedMember)
         .then(res => {
             commit('EDIT_MEMBER', editedMember)
+            dispatch('logActions/addActionLog', {actionType: 'edit', module: 'member'},{ root: true })
         })
         .catch(e => console.log(e))
     },
@@ -152,6 +154,7 @@ export const actions = {
         ".json?auth="+ vuexContext.rootGetters['authentication/token'], deletedMember)
         .then(res => {
             vuexContext.commit('DELETE_MEMBER', deletedMember)
+            vuexContext.dispatch('logActions/addActionLog', {actionType: 'delete', module: 'member'},{ root: true })
         })
         .catch(e => console.log(e))
     },

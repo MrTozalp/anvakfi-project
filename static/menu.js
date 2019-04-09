@@ -8,7 +8,7 @@ const Menu =  [
     { name: 'app-branches', icon: 'account_balance', text: 'Şubeler', to:'/app/branches' },
     { divider: true },
     { heading: 'Admin' },
-    { name: 'app-users', icon: 'accessibility', text: 'Kullanıcılar', to:'/app/users' },
+    { name: 'app-log', icon: 'accessibility', text: 'Loglar', to:'/app/log' },
     { name: 'app-common', icon: 'label', text: 'Genel Bilgiler' , to:'/app/commons'},
     { divider: true }
 ]

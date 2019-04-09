@@ -83,10 +83,12 @@ export const actions = {
             "https://anadolu-vakfi.firebaseio.com/groups.json?auth=" +rootGetters['authentication/token'], createdGroup)
         .then(data => {
             commit('ADD_GROUP', {...createdGroup, id: data.name})
+            dispatch('logActions/addActionLog', 
+            {actionType: 'add', module: 'group'} , { root: true })
         })
         .catch(e => console.log(e));
     },
-    editGroup({commit, rootGetters}, group) {
+    editGroup({commit, dispatch, rootGetters}, group) {
 
         const editedGroup = {
             ...group,
@@ -97,7 +99,10 @@ export const actions = {
         editedGroup.id +
         ".json?auth=" + rootGetters['authentication/token'], editedGroup)
         .then(res => {
+            dispatch('logActions/addActionLog', 
+            {actionType: 'edit', module: 'group'} , { root: true })
             commit('EDIT_GROUP', editedGroup)
+
         })
         .catch(e => console.log(e))
     },
@@ -108,6 +113,8 @@ export const actions = {
         ".json?auth="+ vuexContext.rootGetters['authentication/token'], deletedGroup)
         .then(res => {
             vuexContext.commit('DELETE_GROUP', deletedGroup)
+            dispatch('logActions/addActionLog', 
+            {actionType: 'delete', module: 'group'} , { root: true })
         })
         .catch(e => console.log(e))
     }

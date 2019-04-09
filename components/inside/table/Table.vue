@@ -193,7 +193,6 @@ export default {
         viewItem(uuid){
             const currenPathName = this.$route.name
             const query = this.$route.query
-            //router.push({ name: 'user', params: { userId } }) // -> /user/123
 
             this.$router.push({ name: currenPathName+'-id-view', params: { id: uuid }, query: query })
             //const currentPath = this.$route.path

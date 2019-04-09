@@ -184,6 +184,8 @@ export const actions = {
         ".json?auth="+ vuexContext.rootGetters['authentication/token'], deletedCommon)
         .then(res => {
             vuexContext.commit('DELETE_COMMON_ITEM', deletedCommon)
+            vuexContext.dispatch('logActions/addActionLog', 
+            {actionType: 'delete', module: 'common'} , { root: true })
         })
         .catch(e => console.log(e))
     },
@@ -241,6 +243,8 @@ export const actions = {
             "https://anadolu-vakfi.firebaseio.com/commonList.json?auth=" +rootGetters['authentication/token'], newItem)
         .then(data => {
             commit('ADD_COMMON_ITEM', {...newItem, id: data.name})
+            dispatch('logActions/addActionLog', 
+            {actionType: 'add', module: 'common'} , { root: true })
             dispatch('dataAction/setBusy', false, { root: true });
             dispatch('dataAction/setSuccess', true, { root: true })
         })
@@ -285,6 +289,7 @@ export const actions = {
             commit('EDIT_COMMON_ITEM', editedCommon)
             dispatch('dataAction/setBusy', false, { root: true });
             dispatch('dataAction/setSuccess', true, { root: true })
+            dispatch('logActions/addActionLog', {actionType: 'edit', module: 'common'}, { root: true })
         })
         .catch(e => {                    
             dispatch('dataAction/setBusy', false, { root: true })
