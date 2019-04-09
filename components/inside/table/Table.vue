@@ -320,6 +320,7 @@ export default {
             fileDownload.download = 'adres-etiketleri.doc';
             fileDownload.click();
             document.body.removeChild(fileDownload);
+            this.$store.dispatch('logActions/addActionLog', {actionType: 'export', module: 'word'})
         }
     }
 }
