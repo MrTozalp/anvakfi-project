@@ -58,6 +58,10 @@ export default {
           {
             text: 'Memleket',
             value: 'hometownName'
+          },
+          {
+            text: 'İl',
+            value: 'provinceName'
           }
         ],
         rows_per_page_items: [10,25,50,{text:'All','value':-1}] ,

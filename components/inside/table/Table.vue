@@ -55,6 +55,7 @@
         <v-data-table
             :headers="tableConfig.headers"
             :search="search"
+            :filter="filter"
             :items="filteredRecords"
             :rows-per-page-items="tableConfig.rows_per_page_items"
             class="elevation-0"
@@ -162,6 +163,11 @@ export default {
         }
     },
     computed: {
+        filter(){
+            return this.caseSensitive
+                ? (item, search, textKey) => item[textKey].indexOf(search) > -1
+                : undefined
+        },
         filteredRecords() {
             return this.records.filter(d => {
                 return Object.keys(this.filters).every(f => {
